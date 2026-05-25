@@ -3,7 +3,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
-
+from core.serializers import PasswordResetRequestSerializer, PasswordResetConfirmSerializer
+from core.services import request_password_reset, confirm_password_reset
 from core.permissions import IsPatient, IsDoctor
 
 from .serializers import (
@@ -120,3 +121,38 @@ class DoctorDashboardView(APIView):
 
     def get(self, request):
         return Response({"message": "Welcome doctor"})
+    
+
+
+# =========================
+# PASSWORD RESET REQUEST VIEW
+# =========================
+class PasswordResetRequestView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+        serializer = PasswordResetRequestSerializer(data=request.data)
+
+        if serializer.is_valid():
+            result = request_password_reset(serializer.validated_data)
+            return Response(result, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# =========================
+# PASSWORD RESET CONFIRM VIEW
+# =========================
+class PasswordResetConfirmView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+        serializer = PasswordResetConfirmSerializer(data=request.data)
+
+        if serializer.is_valid():
+            result = confirm_password_reset(serializer.validated_data)
+            return Response(result, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

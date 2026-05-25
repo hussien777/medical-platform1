@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="mainHtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Eye Care Project - Register</title>
+    <style>
+        :root {
+            --primary: #0d9488;
+            --primary-hover: #14b8a6;
+            --bg-light: #f1f5f9;
+            --text-dark: #334155;
+        }
+
+        body.dark-mode {
+            --bg-light: #0f172a;
+            --text-dark: #f8fafc;
+            --primary: #2dd4bf;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+            transition: 0.3s;
+        }
+
+        nav {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-btn {
+            padding: 8px 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            background: white;
+            color: black;
+        }
+
+        body.dark-mode .nav-btn {
+            background: #1e293b;
+            color: white;
+            border-color: #444;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            padding: 40px 10px;
+        }
+
+        .form-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 650px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode .form-card {
+            background: #1e293b;
+        }
+
+        .logo-area {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .eye-svg {
+            width: 80px;
+            height: 80px;
+        }
+
+        @keyframes eyeMove {
+            0% {
+                transform: rotate(0deg) translateX(4px) rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg) translateX(4px) rotate(-360deg);
+            }
+        }
+
+        .white-pupil {
+            fill: white;
+            animation: eyeMove 25s linear infinite;
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .sub-text {
+            text-align: center;
+            color: gray;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .type-switcher {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: #eee;
+            padding: 5px;
+            border-radius: 10px;
+        }
+
+        body.dark-mode .type-switcher {
+            background: #0f172a;
+        }
+
+        .type-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            background: none;
+            color: var(--text-dark);
+        }
+
+        .type-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            position: relative;
+        }
+
+        label {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        input,
+        select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+            background: white;
+            color: black;
+        }
+
+        body.dark-mode input,
+        body.dark-mode select {
+            background: #0f172a;
+            color: white;
+            border-color: #334155;
+        }
+
+        .pass-wrapper {
+            position: relative;
+        }
+
+        .pass-wrapper i {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: gray;
+        }
+
+        .rules-list {
+            margin-top: 5px;
+            font-size: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .rule-item {
+            color: #ef4444;
+        }
+
+        .rule-item.ok {
+            color: #10b981;
+        }
+
+        /* Separate Sections */
+        .role-section {
+            display: none;
+        }
+
+        .role-section.active {
+            display: block;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+
+        .otp-box {
+            display: none;
+            margin-top: 15px;
+        }
+
+        .otp-box.active {
+            display: block;
+        }
+
+        /* Medical Styled Popup */
+        .my-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            backdrop-filter: blur(4px);
+        }
+
+        .popup-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border-top: 5px solid var(--primary);
+        }
+
+        body.dark-mode .popup-content {
+            background: #1e293b;
+            color: white;
+        }
+
+        .popup-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .popup-msg {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .popup-btn {
+            padding: 10px 30px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .popup-btn:hover {
+            opacity: 0.9;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 500px) {
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div>
+            <button class="nav-btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
+            <button class="nav-btn" onclick="changeLang()" id="langBtn">🌐 العربية</button>
+        </div>
+        <a href="login.html" class="nav-btn" style="background:var(--primary); color:white; border:none;">Login</a>
+    </nav>
+
+    <div class="container">
+        <div class="form-card">
+            <div class="logo-area">
+                <svg class="eye-svg" viewBox="0 0 100 100">
+                    <g transform="translate(30, 50)">
+                        <circle cx="0" cy="0" r="20" fill="none" stroke="var(--primary)" stroke-width="2" />
+                        <circle cx="0" cy="0" r="12" fill="#14b8a6" />
+                        <circle cx="0" cy="0" r="5" class="white-pupil" />
+                    </g>
+                    <g transform="translate(70, 50)">
+                        <circle cx="0" cy="0" r="20" fill="none" stroke="var(--primary)" stroke-width="2" />
+                        <circle cx="0" cy="0" r="12" fill="#14b8a6" />
+                        <circle cx="0" cy="0" r="5" class="white-pupil" />
+                    </g>
+                </svg>
+            </div>
+
+            <h2 id="pageTitle">Create Account</h2>
+            <p class="sub-text" id="pageSub">Join our medical community</p>
+
+            <div class="type-switcher">
+                <button class="type-btn active" id="pBtn" onclick="setRole('patient')">Patient</button>
+                <button class="type-btn" id="dBtn" onclick="setRole('doctor')">Doctor</button>
+            </div>
+
+            <form id="regForm" onsubmit="doRegister(event)">
+
+                <!-- Patient Section -->
+                <div id="pSec" class="role-section active">
+                    <div class="input-grid">
+                        <div class="field full-width">
+                            <label class="l-name">Full Name</label>
+                            <input type="text" id="pName" placeholder="Patient Name">
+                        </div>
+                        <div class="field">
+                            <label class="l-id">National ID</label>
+                            <input type="text" id="pId" maxlength="10" placeholder="1234567890">
+                        </div>
+                        <div class="field">
+                            <label class="l-email">Email (Gmail)</label>
+                            <input type="email" id="pEmail" placeholder="patient@gmail.com">
+                        </div>
+                        <div class="field">
+                            <label class="l-dob">Date of Birth</label>
+                            <input type="date" id="pDob">
+                        </div>
+                        <div class="field">
+                            <label class="l-gen">Gender</label>
+                            <select id="pGen">
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label class="l-pass">Password</label>
+                            <div class="pass-wrapper">
+                                <input type="password" id="pPass" placeholder="••••••••"
+                                    oninput="checkPassRules(this.value, 'p')">
+                                <i class="fas fa-eye" onclick="toggleEye('pPass', this)"></i>
+                            </div>
+                            <div class="rules-list">
+                                <span class="rule-item" id="p-r-cap">● <span class="t-cap">One Uppercase
+                                        (A-Z)</span></span>
+                                <span class="rule-item" id="p-r-sym">● <span class="t-sym">One Special Symbol
+                                        (@#$&?!)</span></span>
+                                <span class="rule-item" id="p-r-num">● <span class="t-num">One Number
+                                        (0-9)</span></span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="l-conf">Confirm Password</label>
+                            <div class="pass-wrapper">
+                                <input type="password" id="pConf" placeholder="••••••••">
+                                <i class="fas fa-eye" onclick="toggleEye('pConf', this)"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Doctor Section -->
+                <div id="dSec" class="role-section">
+                    <div class="input-grid">
+                        <div class="field full-width">
+                            <label class="l-name">Full Name</label>
+                            <input type="text" id="dName" placeholder="Doctor Name">
+                        </div>
+                        <div class="field">
+                            <label class="l-id">National ID</label>
+                            <input type="text" id="dId" maxlength="10" placeholder="1234567890">
+                        </div>
+                        <div class="field">
+                            <label class="l-email">Email (Gmail)</label>
+                            <input type="email" id="dEmail" placeholder="doctor@gmail.com">
+                        </div>
+                        <div class="field">
+                            <label class="l-age">Age</label>
+                            <input type="number" id="dAge" placeholder="30">
+                        </div>
+                        <div class="field">
+                            <label class="l-uni">University</label>
+                            <select id="dUni">
+                                <option value="" disabled selected class="uniPh">Select University</option>
+                                <option>University of Jordan</option>
+                                <option>Jordan University of Science and Technology</option>
+                                <option>Yarmouk University</option>
+                                <option>Mutah University</option>
+                                <option>Hashemite University</option>
+                                <option>Al-Balqa Applied University</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label class="l-grad">Graduation Year</label>
+                            <select id="dGradYear">
+                                <option value="" disabled selected class="gradPh">Select Year</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label class="l-exp">Years of Experience</label>
+                            <input type="number" id="dExp" placeholder="5">
+                        </div>
+                        <div class="field">
+                            <label for="dCert">Doctor Certificate Image</label>
+                            <input type="file" id="dCert" accept=".jpg,.jpeg,.png">
+                        </div>
+                        <div class="field">
+                            <label class="l-pass">Password</label>
+                            <div class="pass-wrapper">
+                                <input type="password" id="dPass" placeholder="••••••••"
+                                    oninput="checkPassRules(this.value, 'd')">
+                                <i class="fas fa-eye" onclick="toggleEye('dPass', this)"></i>
+                            </div>
+                            <div class="rules-list">
+                                <span class="rule-item" id="d-r-cap">● <span class="t-cap">One Uppercase
+                                        (A-Z)</span></span>
+                                <span class="rule-item" id="d-r-sym">● <span class="t-sym">One Special Symbol
+                                        (@#$&?!)</span></span>
+                                <span class="rule-item" id="d-r-num">● <span class="t-num">One Number
+                                        (0-9)</span></span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="l-conf">Confirm Password</label>
+                            <div class="pass-wrapper">
+                                <input type="password" id="dConf" placeholder="••••••••">
+                                <i class="fas fa-eye" onclick="toggleEye('dConf', this)"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field otp-box" id="otpArea">
+                    <label id="l-otp">OTP Code</label>
+                    <input type="text" id="otpIn" maxlength="6" placeholder="123456">
+                </div>
+
+                <button type="submit" class="submit-btn" id="subBtn">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Improved Medical Popup -->
+    <div class="my-popup" id="myPopup">
+        <div class="popup-content">
+            <div class="popup-icon" id="popupIcon">
+                <i class="fas fa-info-circle"></i>
+            </div>
+            <p class="popup-msg" id="popupMsg"></p>
+            <button class="popup-btn" onclick="closePopup()">OK</button>
+        </div>
+    </div>
+
+    <script>
+        let lang = 'en';
+        let dark = false;
+        let role = 'patient';
+        let generatedOtp = "";
+
+        const words = {
+            en: {
+                title: 'Create Account', sub: 'Join our medical community',
+                name: 'Full Name', id: 'National ID', email: 'Email (Gmail)',
+                dob: 'Date of Birth', gen: 'Gender', age: 'Age', uni: 'University',
+                grad: 'Graduation Year', exp: 'Years of Experience',
+                pass: 'Password', conf: 'Confirm Password', otp: 'OTP Code',
+                btn: 'Create Account', verify: 'Verify & Finish',
+                rCap: 'One Uppercase (A-Z)', rSym: 'One Special Symbol (@#$&?!)', rNum: 'One Number (0-9)',
+                uniPh: 'Select University', gradPh: 'Select Year',
+                errGmail: 'Please use a Gmail account', errMatch: 'Passwords do not match',
+                errRules: 'Please follow password rules', errOtp: 'Wrong OTP code',
+                errExp: 'Experience cannot exceed years since graduation!',
+                errId: 'National ID must be 10 digits (English numbers only)',
+                errAge: 'Doctor must be 23 years or older!',
+                msgOtp: 'OTP sent! Check console.', success: 'Account created successfully!'
+            },
+            ar: {
+                title: 'إنشاء حساب جديد', sub: 'انضم إلى مجتمعنا الطبي',
+                name: 'الاسم الكامل', id: 'الرقم الوطني', email: 'البريد (Gmail)',
+                dob: 'تاريخ الميلاد', gen: 'الجنس', age: 'العمر', uni: 'الجامعة',
+                grad: 'سنة التخرج', exp: 'سنوات الخبرة',
+                pass: 'كلمة المرور', conf: 'تأكيد كلمة المرور', otp: 'رمز التحقق',
+                btn: 'إنشاء حساب', verify: 'تأكيد وإنهاء',
+                rCap: 'حرف كبير واحد (A-Z)', rSym: 'رمز خاص واحد (@#$&?!)', rNum: 'رقم واحد (0-9)',
+                uniPh: 'اختر الجامعة', gradPh: 'اختر السنة',
+                errGmail: 'يرجى استخدام حساب Gmail فقط', errMatch: 'كلمات المرور غير متطابقة',
+                errRules: 'يرجى اتباع شروط كلمة المرور', errOtp: 'الرمز غير صحيح',
+                errExp: 'سنوات الخبرة لا يمكن أن تتجاوز المدة منذ التخرج!',
+                errId: 'الرقم الوطني يجب أن يكون 10 أرقام إنجليزية فقط',
+                errAge: 'يجب أن يكون عمر الطبيب 23 سنة فما فوق!',
+                msgOtp: 'تم إرسال الرمز! تفقد الـ Console.', success: 'تم إنشاء الحساب بنجاح!'
+            }
+        };
+
+        // Fill graduation years
+        const gradSelect = document.getElementById('dGradYear');
+        for (let year = 2026; year >= 1960; year--) {
+            let opt = document.createElement('option');
+            opt.value = year;
+            opt.innerText = year;
+            gradSelect.appendChild(opt);
+        }
+
+        // National ID Logic
+        ['pId', 'dId'].forEach(id => {
+            const input = document.getElementById(id);
+            input.oninput = function () {
+                this.value = this.value.replace(/[^0-9]/g, '');
+                if (this.value.length > 10) this.value = this.value.slice(0, 10);
+            };
+        });
+
+        function changeLang() {
+            lang = (lang === 'en' ? 'ar' : 'en');
+            document.getElementById('langBtn').innerText = (lang === 'en' ? '🌐 العربية' : '🌐 English');
+            document.getElementById('mainHtml').dir = (lang === 'ar' ? 'rtl' : 'ltr');
+            updateUI();
+        }
+
+        function updateUI() {
+            const w = words[lang];
+            document.getElementById('pageTitle').innerText = w.title;
+            document.getElementById('pageSub').innerText = w.sub;
+
+            document.querySelectorAll('.l-name').forEach(el => el.innerText = w.name);
+            document.querySelectorAll('.l-id').forEach(el => el.innerText = w.id);
+            document.querySelectorAll('.l-email').forEach(el => el.innerText = w.email);
+            document.querySelectorAll('.l-dob').forEach(el => el.innerText = w.dob);
+            document.querySelectorAll('.l-gen').forEach(el => el.innerText = w.gen);
+            document.querySelectorAll('.l-age').forEach(el => el.innerText = w.age);
+            document.querySelectorAll('.l-uni').forEach(el => el.innerText = w.uni);
+            document.querySelectorAll('.l-grad').forEach(el => el.innerText = w.grad);
+            document.querySelectorAll('.l-exp').forEach(el => el.innerText = w.exp);
+            document.querySelectorAll('.l-pass').forEach(el => el.innerText = w.pass);
+            document.querySelectorAll('.l-conf').forEach(el => el.innerText = w.conf);
+            document.querySelectorAll('.t-cap').forEach(el => el.innerText = w.rCap);
+            document.querySelectorAll('.t-sym').forEach(el => el.innerText = w.rSym);
+            document.querySelectorAll('.t-num').forEach(el => el.innerText = w.rNum);
+            document.querySelectorAll('.uniPh').forEach(el => el.innerText = w.uniPh);
+            document.querySelectorAll('.gradPh').forEach(el => el.innerText = w.gradPh);
+
+            document.getElementById('l-otp').innerText = w.otp;
+            const sBtn = document.getElementById('subBtn');
+            sBtn.innerText = document.getElementById('otpArea').classList.contains('active') ? w.verify : w.btn;
+        }
+
+        function toggleTheme() {
+            dark = !dark;
+            document.body.classList.toggle('dark-mode');
+            document.getElementById('themeBtn').innerText = dark ? '☀️ Light' : '🌙 Dark';
+        }
+
+        function setRole(r) {
+            role = r;
+            document.getElementById('pBtn').classList.toggle('active', r === 'patient');
+            document.getElementById('dBtn').classList.toggle('active', r === 'doctor');
+            document.getElementById('pSec').classList.toggle('active', r === 'patient');
+            document.getElementById('dSec').classList.toggle('active', r === 'doctor');
+            document.getElementById('otpArea').classList.remove('active');
+            updateUI();
+        }
+
+        function toggleEye(id, icon) {
+            const input = document.getElementById(id);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+
+        ['pPass', 'dPass'].forEach(id => {
+            document.getElementById(id).onkeypress = function (e) {
+                if (!/[a-zA-Z0-9@#$&?!]/.test(String.fromCharCode(e.which))) e.preventDefault();
+            };
+        });
+
+        function checkPassRules(v, prefix) {
+            const hasCap = /[A-Z]/.test(v);
+            const hasSym = /[@#$&?!]/.test(v);
+            const hasNum = /[0-9]/.test(v);
+            document.getElementById(prefix + '-r-cap').className = 'rule-item ' + (hasCap ? 'ok' : '');
+            document.getElementById(prefix + '-r-sym').className = 'rule-item ' + (hasSym ? 'ok' : '');
+            document.getElementById(prefix + '-r-num').className = 'rule-item ' + (hasNum ? 'ok' : '');
+            return hasCap && hasSym && hasNum;
+        }
+
+        function showPopup(m, type = 'info') {
+            const msgEl = document.getElementById('popupMsg');
+            const iconEl = document.getElementById('popupIcon');
+            msgEl.innerText = m;
+
+            if (type === 'error') {
+                iconEl.innerHTML = '<i class="fas fa-exclamation-circle" style="color: #ef4444;"></i>';
+            } else if (type === 'success') {
+                iconEl.innerHTML = '<i class="fas fa-check-circle" style="color: #10b981;"></i>';
+            } else {
+                iconEl.innerHTML = '<i class="fas fa-info-circle"></i>';
+            }
+
+            document.getElementById('myPopup').style.display = 'flex';
+        }
+
+        function closePopup() { document.getElementById('myPopup').style.display = 'none'; }
+
+        let otpTimerInterval = null;
+        const OTP_SECONDS = 60; // 1 minutes
+
+        function ensureOtpTimerElement() {
+            let timer = document.getElementById('otpTimer');
+
+            if (!timer) {
+                timer = document.createElement('div');
+                timer.id = 'otpTimer';
+                timer.style.marginTop = '8px';
+                timer.style.fontSize = '0.85rem';
+                timer.style.fontWeight = 'bold';
+                timer.style.color = 'var(--primary)';
+
+                const otpInput = document.getElementById('otpIn');
+                otpInput.insertAdjacentElement('afterend', timer);
+            }
+
+            return timer;
+        }
+
+        function formatOtpTime(totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+
+            return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function stopOtpTimer() {
+            if (otpTimerInterval) {
+                clearInterval(otpTimerInterval);
+                otpTimerInterval = null;
+            }
+        }
+
+        function startOtpTimer(seconds = OTP_SECONDS) {
+            stopOtpTimer();
+
+            const timer = ensureOtpTimerElement();
+            let remaining = seconds;
+
+            function renderTimer() {
+                timer.innerText = lang === 'en'
+                    ? `OTP expires in: ${formatOtpTime(remaining)}`
+                    : `ينتهي رمز التحقق خلال: ${formatOtpTime(remaining)}`;
+
+                timer.style.color = remaining <= 30 ? '#ef4444' : 'var(--primary)';
+            }
+
+            renderTimer();
+
+            otpTimerInterval = setInterval(() => {
+                remaining--;
+
+                if (remaining <= 0) {
+                    clearInterval(otpTimerInterval);
+                    otpTimerInterval = null;
+
+                    timer.innerText = lang === 'en'
+                        ? 'OTP expired. Press Verify to clear the pending account, then register again.'
+                        : 'انتهت صلاحية الرمز. اضغط تأكيد لتنظيف الحساب المعلق ثم سجل مرة أخرى.';
+
+                    timer.style.color = '#ef4444';
+                    return;
+                }
+
+                renderTimer();
+            }, 1000);
+        }
+
+        function getBackendErrorMessage(error, fallbackMessage) {
+            if (!error) return fallbackMessage;
+
+            if (typeof error === 'string') {
+                return error;
+            }
+
+            if (Array.isArray(error)) {
+                return error.join(' ');
+            }
+
+            if (error.detail) {
+                return error.detail;
+            }
+
+            if (error.non_field_errors) {
+                return error.non_field_errors.join(' ');
+            }
+
+            if (error.email) {
+                return Array.isArray(error.email) ? error.email.join(' ') : error.email;
+            }
+
+            if (error.national_id) {
+                return Array.isArray(error.national_id) ? error.national_id.join(' ') : error.national_id;
+            }
+
+            if (error.full_name) {
+                return Array.isArray(error.full_name) ? error.full_name.join(' ') : error.full_name;
+            }
+
+            if (error.otp_code) {
+                return Array.isArray(error.otp_code) ? error.otp_code.join(' ') : error.otp_code;
+            }
+
+            return fallbackMessage;
+        }
+
+        async function doRegister(e) {
+            e.preventDefault();
+
+            const w = words[lang];
+            const p = (role === 'patient' ? 'p' : 'd');
+            const submitBtn = document.getElementById('subBtn');
+            const otpIsActive = document.getElementById('otpArea').classList.contains('active');
+
+            // =========================
+            // STEP 1: REGISTER USER
+            // =========================
+            if (!otpIsActive) {
+                const idVal = document.getElementById(p + 'Id').value.trim();
+                const email = document.getElementById(p + 'Email').value.trim();
+                const pass = document.getElementById(p + 'Pass').value;
+                const conf = document.getElementById(p + 'Conf').value;
+
+                const fullName = role === 'patient'
+                    ? document.getElementById('pName').value.trim()
+                    : document.getElementById('dName').value.trim();
+
+                const nameParts = fullName.split(/\s+/).filter(Boolean);
+
+                if (nameParts.length !== 4) {
+                    showPopup(
+                        lang === 'en'
+                            ? 'Full name must contain exactly 4 names'
+                            : 'يجب أن يتكون الاسم الكامل من 4 أسماء',
+                        'error'
+                    );
+                    return;
+                }
+
+                if (idVal.length !== 10) {
+                    showPopup(w.errId, 'error');
+                    return;
+                }
+
+                if (!email.endsWith('@gmail.com')) {
+                    showPopup(w.errGmail, 'error');
+                    return;
+                }
+
+                if (!checkPassRules(pass, p)) {
+                    showPopup(w.errRules, 'error');
+                    return;
+                }
+
+                if (pass !== conf) {
+                    showPopup(w.errMatch, 'error');
+                    return;
+                }
+
+                let backendUrl = "";
+                let registrationData = {};
+
+                if (role === 'patient') {
+                    backendUrl = "http://127.0.0.1:8000/api/register/patient/";
+
+                    registrationData = {
+                        full_name: fullName,
+                        national_id: idVal,
+                        email: email,
+                        gender: document.getElementById('pGen').value,
+                        date_of_birth: document.getElementById('pDob').value,
+                        password: pass,
+                        confirm_password: conf
+                    };
+                } else {
+                    backendUrl = "http://127.0.0.1:8000/api/register/doctor/";
+
+                    const age = parseInt(document.getElementById('dAge').value);
+                    const rawGradYear = document.getElementById('dGradYear').value;
+                    const gradYear = parseInt(rawGradYear, 10);
+                    const exp = parseInt(document.getElementById('dExp').value);
+
+                    if (isNaN(age) || age < 23) {
+                        showPopup(w.errAge, 'error');
+                        return;
+                    }
+
+                    if (isNaN(gradYear)) {
+                        showPopup(
+                            lang === 'en' ? 'Please select graduation year' : 'يرجى اختيار سنة التخرج',
+                            'error'
+                        );
+                        return;
+                    }
+
+                    if (isNaN(exp) || exp < 0) {
+                        showPopup(
+                            lang === 'en' ? 'Please enter valid experience years' : 'يرجى إدخال سنوات خبرة صحيحة',
+                            'error'
+                        );
+                        return;
+                    }
+
+                    if (exp > (2026 - gradYear)) {
+                        showPopup(w.errExp, 'error');
+                        return;
+                    }
+
+                    const formData = new FormData();
+
+                    formData.append("full_name", fullName);
+                    formData.append("national_id", idVal);
+                    formData.append("email", email);
+                    formData.append("gender", "male");
+                    formData.append("age", String(age));
+                    formData.append("university", document.getElementById('dUni').value);
+                    formData.append("graduation_year", rawGradYear);
+                    formData.append("experience_years", String(exp));
+                    formData.append("years_of_experience", String(exp));
+                    formData.append("password", pass);
+                    formData.append("confirm_password", conf);
+
+                    // certificate image input
+                    let certificateInput =
+                        document.getElementById("dCert") ||
+                        document.getElementById("certInput") ||
+                        document.getElementById("certificate_image") ||
+                        document.querySelector('input[type="file"]');
+
+                    if (!certificateInput || !certificateInput.files || !certificateInput.files[0]) {
+                        showPopup(
+                            lang === 'en'
+                                ? 'Please upload doctor certificate image.'
+                                : 'يرجى رفع صورة شهادة الطبيب.',
+                            'error'
+                        );
+                        return;
+                    }
+
+                    formData.append("certificate_image", certificateInput.files[0]);
+                    registrationData = formData;
+                }
+
+                submitBtn.disabled = true;
+                submitBtn.innerText = lang === 'en' ? 'Please wait...' : 'يرجى الانتظار...';
+
+                try {
+                    let fetchOptions = {
+                        method: "POST"
+                    };
+
+                    if (registrationData instanceof FormData) {
+                        // Doctor registration: multipart/form-data
+                        // Do NOT set Content-Type manually
+                        fetchOptions.body = registrationData;
+                    } else {
+                        // Patient registration: JSON
+                        fetchOptions.headers = {
+                            "Content-Type": "application/json"
+                        };
+                        fetchOptions.body = JSON.stringify(registrationData);
+                    }
+
+                    const response = await fetch(backendUrl, fetchOptions);
+
+                    let data = {};
+                    try {
+                        data = await response.json();
+                    } catch (jsonError) {
+                        data = {};
+                    }
+
+                    if (!response.ok) {
+                        console.error("Registration error:", data);
+                        throw data;
+                    }
+
+                    console.log("Registration success:", data);
+
+                    showPopup(
+                        lang === 'en'
+                            ? 'OTP sent successfully. Check your email.'
+                            : 'تم إرسال رمز التحقق بنجاح. تحقق من بريدك الإلكتروني.',
+                        'info'
+                    );
+
+                    document.getElementById('otpArea').classList.add('active');
+
+                    submitBtn.disabled = false;
+                    updateUI();
+
+                    startOtpTimer(OTP_SECONDS);
+
+                } catch (error) {
+                    console.error("Registration failed:", error);
+
+                    submitBtn.disabled = false;
+                    updateUI();
+
+                    showPopup(
+                        getBackendErrorMessage(
+                            error,
+                            lang === 'en'
+                                ? 'Registration failed. Check console for details.'
+                                : 'فشل التسجيل. تحقق من Console لمعرفة السبب.'
+                        ),
+                        'error'
+                    );
+                }
+
+                return;
+            }
+
+            // =========================
+            // STEP 2: VERIFY OTP
+            // =========================
+            const enteredOtp = document.getElementById('otpIn').value.trim();
+
+            if (!enteredOtp) {
+                showPopup(w.errOtp, 'error');
+                return;
+            }
+
+            const verifyUrl = role === 'patient'
+                ? "http://127.0.0.1:8000/api/verify-otp/"
+                : "http://127.0.0.1:8000/api/verify-doctor-otp/";
+
+            const otpData = {
+                email: document.getElementById(p + 'Email').value.trim(),
+                otp_code: enteredOtp
+            };
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = lang === 'en' ? 'Verifying...' : 'جاري التحقق...';
+
+            try {
+                const response = await fetch(verifyUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(otpData)
+                });
+
+                let data = {};
+                try {
+                    data = await response.json();
+                } catch (jsonError) {
+                    data = {};
+                }
+
+                if (!response.ok) {
+                    console.error("OTP verification error:", data);
+                    throw data;
+                }
+
+                console.log("OTP verification success:", data);
+
+                stopOtpTimer();
+
+                showPopup(w.success, "success");
+
+                setTimeout(() => {
+                    window.location.href = "login.html";
+                }, 2000);
+
+            } catch (error) {
+                console.error("OTP verification failed:", error);
+
+                submitBtn.disabled = false;
+                updateUI();
+
+                showPopup(
+                    getBackendErrorMessage(error, w.errOtp),
+                    'error'
+                );
+            }
+        }
+    </script>
+</body>
+
+</html>

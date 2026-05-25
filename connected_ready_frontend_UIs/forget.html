@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password - Eye Care</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --primary:#06B6D4; --bg:#f8fafc; --card:#fff; --text:#1e293b; --muted:#64748b; --border:#e2e8f0; --danger:#dc2626; --success:#0891b2; }
+        body.dark-mode { --bg:#0f172a; --card:#1e293b; --text:#f1f5f9; --muted:#94a3b8; --border:#334155; }
+        body { font-family:'Cairo',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; flex-direction:column; transition:.3s; }
+        .navbar { padding:20px 40px; display:flex; justify-content:space-between; align-items:center; }
+        .animated-logo-box { width:50px; height:50px; }
+        .controls { display:flex; gap:12px; align-items:center; }
+        .btn-circle { width:40px; height:40px; border-radius:50%; border:1px solid var(--border); background:var(--card); color:var(--text); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:18px; transition:.2s; }
+        .btn-lang { padding:6px 15px; border-radius:20px; border:1px solid var(--border); background:var(--card); color:var(--text); cursor:pointer; font-family:inherit; font-weight:600; }
+        .btn-circle:hover,.btn-lang:hover { border-color:var(--primary); color:var(--primary); }
+        .main-container { flex:1; display:flex; justify-content:center; align-items:center; padding:20px; }
+        .card { background:var(--card); border:1px solid var(--border); border-radius:25px; padding:40px; width:100%; max-width:480px; text-align:center; box-shadow:0 10px 25px rgba(0,0,0,.05); }
+        .static-logo { width:80px; margin:0 auto 20px; display:block; }
+        h1 { color:var(--primary); font-size:24px; margin-bottom:10px; font-weight:700; }
+        p { font-size:14px; margin-bottom:22px; color:var(--muted); line-height:1.6; }
+        .step-indicator { display:flex; align-items:center; gap:10px; justify-content:center; margin-bottom:25px; }
+        .step-dot { width:32px; height:32px; border-radius:50%; border:1px solid var(--border); color:var(--muted); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; }
+        .step-dot.active { background:var(--primary); color:white; border-color:var(--primary); }
+        .step-line { width:60px; height:2px; background:var(--border); }
+        .form-step { display:none; }
+        .form-step.active { display:block; }
+        .form-group { text-align:left; margin-bottom:18px; }
+        label { display:block; margin-bottom:8px; font-weight:600; font-size:14px; }
+        label i { margin-right:5px; color:var(--primary); }
+        input { width:100%; padding:12px 15px; border-radius:12px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; outline:none; transition:.3s; }
+        input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(6,182,212,.1); }
+        .password-wrapper { position:relative; }
+        .password-wrapper input { padding-right:45px; }
+        .password-wrapper i { position:absolute; top:50%; right:14px; transform:translateY(-50%); color:var(--muted); cursor:pointer; }
+        .submit-btn,.secondary-btn { width:100%; padding:14px; border-radius:12px; font-family:inherit; font-weight:700; font-size:16px; cursor:pointer; transition:.3s; display:flex; align-items:center; justify-content:center; gap:10px; margin-top:8px; }
+        .submit-btn { border:none; background:var(--primary); color:white; }
+        .secondary-btn { background:transparent; color:var(--primary); border:1px solid var(--primary); }
+        .submit-btn:hover,.secondary-btn:hover { opacity:.9; transform:translateY(-2px); }
+        .submit-btn:disabled,.secondary-btn:disabled { opacity:.6; cursor:not-allowed; transform:none; }
+        .back-link { display:inline-flex; align-items:center; gap:5px; margin-top:20px; color:var(--primary); text-decoration:none; font-weight:600; font-size:14px; }
+        .back-link:hover { text-decoration:underline; }
+        .message-box { display:none; padding:14px 18px; border-radius:12px; font-size:14px; font-weight:600; margin-bottom:20px; text-align:left; line-height:1.5; animation:fadeSlideIn .3s ease; }
+        .message-box.success { background:rgba(6,182,212,.1); border:1px solid rgba(6,182,212,.4); color:var(--success); }
+        .message-box.error { background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.35); color:var(--danger); }
+        .message-box.visible { display:flex; align-items:flex-start; gap:10px; }
+        .spinner { width:18px; height:18px; border:2.5px solid rgba(255,255,255,.4); border-top-color:white; border-radius:50%; animation:spin .7s linear infinite; display:none; }
+        .submit-btn.loading .spinner { display:block; }
+        .submit-btn.loading .btn-icon,.submit-btn.loading .btn-label { display:none; }
+        @keyframes fadeSlideIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        body.ar-mode { direction:rtl; }
+        body.ar-mode .form-group, body.ar-mode .message-box { text-align:right; }
+        body.ar-mode label i { margin-right:0; margin-left:5px; }
+        body.ar-mode .password-wrapper input { padding-right:15px; padding-left:45px; }
+        body.ar-mode .password-wrapper i { right:auto; left:14px; }
+        body.ar-mode .back-link i { transform:rotate(180deg); }
+        @media (max-width:520px) { .navbar { padding:15px 20px; } .card { padding:30px 22px; } }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="animated-logo-box">
+            <svg viewBox="0 0 120 120">
+                <g><circle cx="35" cy="60" r="26" fill="none" stroke="#06B6D4" stroke-width="2.5"/><circle cx="35" cy="60" r="16" fill="#0EA5E9" fill-opacity="0.3"/><circle id="eye-p-left" cx="35" cy="60" r="9" fill="#06B6D4"/></g>
+                <g><circle cx="85" cy="60" r="26" fill="none" stroke="#06B6D4" stroke-width="2.5"/><circle cx="85" cy="60" r="16" fill="#0EA5E9" fill-opacity="0.3"/><circle id="eye-p-right" cx="85" cy="60" r="9" fill="#06B6D4"/></g>
+            </svg>
+        </div>
+        <div class="controls">
+            <button class="btn-circle" onclick="toggleTheme()" id="theme-btn"><i class="fas fa-moon"></i></button>
+            <button class="btn-lang" onclick="toggleLang()" id="lang-btn">العربية</button>
+        </div>
+    </nav>
+
+    <main class="main-container">
+        <section class="card">
+            <svg class="static-logo" viewBox="0 0 120 120">
+                <g><circle cx="35" cy="60" r="26" fill="none" stroke="#06B6D4" stroke-width="2.5"/><circle cx="35" cy="60" r="16" fill="#0EA5E9"/><circle cx="35" cy="60" r="9" fill="white"/></g>
+                <g><circle cx="85" cy="60" r="26" fill="none" stroke="#06B6D4" stroke-width="2.5"/><circle cx="85" cy="60" r="16" fill="#0EA5E9"/><circle cx="85" cy="60" r="9" fill="white"/></g>
+            </svg>
+
+            <h1 id="txt-title">Forgot Password?</h1>
+            <p id="txt-desc">Enter your email, verify the OTP code, then create a new password.</p>
+
+            <div class="step-indicator">
+                <div class="step-dot active" id="step-dot-1">1</div>
+                <div class="step-line"></div>
+                <div class="step-dot" id="step-dot-2">2</div>
+            </div>
+
+            <div class="message-box" id="msg-box">
+                <i class="fas fa-circle-info"></i>
+                <span id="msg-text"></span>
+            </div>
+
+            <form id="request-form" class="form-step active" onsubmit="return requestResetCode(event)">
+                <div class="form-group">
+                    <label id="lbl-email"><i class="fas fa-envelope"></i> Email Address</label>
+                    <input type="email" id="email-input" placeholder="example@gmail.com" required>
+                </div>
+                <button type="submit" class="submit-btn" id="btn-request">
+                    <div class="spinner"></div><i class="fas fa-paper-plane btn-icon"></i><span class="btn-label">Send Code</span>
+                </button>
+            </form>
+
+            <form id="confirm-form" class="form-step" onsubmit="return confirmPasswordReset(event)">
+                <div class="form-group">
+                    <label id="lbl-otp"><i class="fas fa-key"></i> OTP Code</label>
+                    <input type="text" id="otp-input" maxlength="6" placeholder="123456" required>
+                </div>
+                <div class="form-group">
+                    <label id="lbl-new-password"><i class="fas fa-lock"></i> New Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="new-password-input" placeholder="••••••••" required>
+                        <i class="fas fa-eye" onclick="togglePassword('new-password-input', this)"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label id="lbl-confirm-password"><i class="fas fa-lock"></i> Confirm Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="confirm-password-input" placeholder="••••••••" required>
+                        <i class="fas fa-eye" onclick="togglePassword('confirm-password-input', this)"></i>
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn" id="btn-confirm">
+                    <div class="spinner"></div><i class="fas fa-check btn-icon"></i><span class="btn-label">Reset Password</span>
+                </button>
+                <button type="button" class="secondary-btn" onclick="goToStepOne()" id="btn-back-step">Use another email</button>
+            </form>
+
+            <a href="login.html" class="back-link" id="link-back"><i class="fas fa-arrow-left"></i><span>Back to Login</span></a>
+        </section>
+    </main>
+
+    <script>
+        let lang = 'en';
+        let isDark = false;
+        let resetEmail = '';
+
+        const BACKEND_URL = 'http://127.0.0.1:8000';
+        const ENDPOINTS = {
+            requestReset: '/api/password-reset/request/',
+            confirmReset: '/api/password-reset/confirm/'
+        };
+
+        const content = {
+            en: {
+                title:'Forgot Password?',
+                descStep1:'Enter your email and we will send you an OTP code to reset your password.',
+                descStep2:'Enter the OTP code from your email and choose a new password.',
+                email:'<i class="fas fa-envelope"></i> Email Address',
+                otp:'<i class="fas fa-key"></i> OTP Code',
+                newPassword:'<i class="fas fa-lock"></i> New Password',
+                confirmPassword:'<i class="fas fa-lock"></i> Confirm Password',
+                sendCode:'Send Code',
+                resetPassword:'Reset Password',
+                useAnotherEmail:'Use another email',
+                back:'<i class="fas fa-arrow-left"></i> <span>Back to Login</span>',
+                langBtn:'العربية',
+                successRequest:'OTP code sent successfully. Check your email.',
+                successReset:'Password changed successfully. Redirecting to login...',
+                errorGeneric:'Something went wrong. Please try again.',
+                errorNotFound:'No account found with this email address.',
+                errorNetwork:'Unable to connect to server. Please check your connection.',
+                errorPasswords:'Passwords do not match.',
+                errorPasswordLength:'Password must be at least 8 characters.',
+                errorOtp:'Please enter the OTP code.'
+            },
+            ar: {
+                title:'نسيت كلمة المرور؟',
+                descStep1:'أدخل بريدك الإلكتروني وسنرسل لك رمز تحقق لإعادة تعيين كلمة المرور.',
+                descStep2:'أدخل رمز التحقق من بريدك الإلكتروني واختر كلمة مرور جديدة.',
+                email:'<i class="fas fa-envelope"></i> البريد الإلكتروني',
+                otp:'<i class="fas fa-key"></i> رمز التحقق',
+                newPassword:'<i class="fas fa-lock"></i> كلمة المرور الجديدة',
+                confirmPassword:'<i class="fas fa-lock"></i> تأكيد كلمة المرور',
+                sendCode:'إرسال الرمز',
+                resetPassword:'تغيير كلمة المرور',
+                useAnotherEmail:'استخدام بريد آخر',
+                back:'<i class="fas fa-arrow-right"></i> <span>العودة لتسجيل الدخول</span>',
+                langBtn:'English',
+                successRequest:'تم إرسال رمز التحقق بنجاح. تحقق من بريدك الإلكتروني.',
+                successReset:'تم تغيير كلمة المرور بنجاح. سيتم تحويلك لتسجيل الدخول...',
+                errorGeneric:'حدث خطأ ما. يرجى المحاولة مرة أخرى.',
+                errorNotFound:'لا يوجد حساب مرتبط بهذا البريد الإلكتروني.',
+                errorNetwork:'تعذر الاتصال بالخادم. يرجى التحقق من الاتصال.',
+                errorPasswords:'كلمتا المرور غير متطابقتين.',
+                errorPasswordLength:'يجب أن تكون كلمة المرور 8 أحرف على الأقل.',
+                errorOtp:'يرجى إدخال رمز التحقق.'
+            }
+        };
+
+        function showMessage(type, text) {
+            const box = document.getElementById('msg-box');
+            const msgText = document.getElementById('msg-text');
+            const icon = box.querySelector('i');
+            box.className = 'message-box';
+            box.classList.add(type, 'visible');
+            icon.className = type === 'success' ? 'fas fa-circle-check' : 'fas fa-circle-exclamation';
+            msgText.textContent = text;
+        }
+
+        function hideMessage() {
+            document.getElementById('msg-box').className = 'message-box';
+        }
+
+        function setLoading(buttonId, isLoading) {
+            const btn = document.getElementById(buttonId);
+            btn.classList.toggle('loading', isLoading);
+            btn.disabled = isLoading;
+        }
+
+        function extractErrorMessage(data, fallback) {
+            if (!data) return fallback;
+            if (typeof data === 'string') return data;
+            if (data.detail) return data.detail;
+            if (data.message) return data.message;
+            if (data.error) return data.error;
+            const firstKey = Object.keys(data)[0];
+            if (firstKey && Array.isArray(data[firstKey])) return `${firstKey}: ${data[firstKey][0]}`;
+            return fallback;
+        }
+
+        async function requestResetCode(e) {
+            e.preventDefault();
+            hideMessage();
+            const email = document.getElementById('email-input').value.trim();
+            if (!email) return false;
+            resetEmail = email;
+            setLoading('btn-request', true);
+
+            try {
+                const response = await fetch(`${BACKEND_URL}${ENDPOINTS.requestReset}`, {
+                    method:'POST',
+                    headers:{ 'Content-Type':'application/json', 'Accept':'application/json' },
+                    body:JSON.stringify({ email: resetEmail })
+                });
+                const data = await response.json().catch(() => ({}));
+
+                if (response.ok) {
+                    showMessage('success', content[lang].successRequest);
+                    goToStepTwo();
+                } else if (response.status === 404) {
+                    showMessage('error', content[lang].errorNotFound);
+                } else {
+                    showMessage('error', extractErrorMessage(data, content[lang].errorGeneric));
+                }
+            } catch (err) {
+                showMessage('error', content[lang].errorNetwork);
+            } finally {
+                setLoading('btn-request', false);
+            }
+            return false;
+        }
+
+        async function confirmPasswordReset(e) {
+            e.preventDefault();
+            hideMessage();
+            const otpCode = document.getElementById('otp-input').value.trim();
+            const newPassword = document.getElementById('new-password-input').value;
+            const confirmPassword = document.getElementById('confirm-password-input').value;
+
+            if (!otpCode) { showMessage('error', content[lang].errorOtp); return false; }
+            if (newPassword.length < 8) { showMessage('error', content[lang].errorPasswordLength); return false; }
+            if (newPassword !== confirmPassword) { showMessage('error', content[lang].errorPasswords); return false; }
+
+            setLoading('btn-confirm', true);
+            try {
+                const response = await fetch(`${BACKEND_URL}${ENDPOINTS.confirmReset}`, {
+                    method:'POST',
+                    headers:{ 'Content-Type':'application/json', 'Accept':'application/json' },
+                    body:JSON.stringify({
+                        email: resetEmail,
+                        otp_code: otpCode,
+                        new_password: newPassword,
+                        confirm_password: confirmPassword
+                    })
+                });
+                const data = await response.json().catch(() => ({}));
+
+                if (response.ok) {
+                    showMessage('success', content[lang].successReset);
+                    setTimeout(() => { window.location.href = 'login.html'; }, 2000);
+                } else {
+                    showMessage('error', extractErrorMessage(data, content[lang].errorGeneric));
+                }
+            } catch (err) {
+                showMessage('error', content[lang].errorNetwork);
+            } finally {
+                setLoading('btn-confirm', false);
+            }
+            return false;
+        }
+
+        function goToStepTwo() {
+            document.getElementById('request-form').classList.remove('active');
+            document.getElementById('confirm-form').classList.add('active');
+            document.getElementById('step-dot-1').classList.remove('active');
+            document.getElementById('step-dot-2').classList.add('active');
+            updateText();
+        }
+
+        function goToStepOne() {
+            hideMessage();
+            resetEmail = '';
+            document.getElementById('email-input').value = '';
+            document.getElementById('otp-input').value = '';
+            document.getElementById('new-password-input').value = '';
+            document.getElementById('confirm-password-input').value = '';
+            document.getElementById('confirm-form').classList.remove('active');
+            document.getElementById('request-form').classList.add('active');
+            document.getElementById('step-dot-2').classList.remove('active');
+            document.getElementById('step-dot-1').classList.add('active');
+            updateText();
+        }
+
+        function togglePassword(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') { input.type = 'text'; icon.className = 'fas fa-eye-slash'; }
+            else { input.type = 'password'; icon.className = 'fas fa-eye'; }
+        }
+
+        function toggleLang() {
+            lang = lang === 'en' ? 'ar' : 'en';
+            const isAr = lang === 'ar';
+            document.body.classList.toggle('ar-mode', isAr);
+            document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+            document.documentElement.lang = lang;
+            updateText();
+            hideMessage();
+        }
+
+        function updateText() {
+            const t = content[lang];
+            const isStepTwo = document.getElementById('confirm-form').classList.contains('active');
+            document.getElementById('txt-title').innerText = t.title;
+            document.getElementById('txt-desc').innerText = isStepTwo ? t.descStep2 : t.descStep1;
+            document.getElementById('lbl-email').innerHTML = t.email;
+            document.getElementById('lbl-otp').innerHTML = t.otp;
+            document.getElementById('lbl-new-password').innerHTML = t.newPassword;
+            document.getElementById('lbl-confirm-password').innerHTML = t.confirmPassword;
+            document.getElementById('btn-request').querySelector('.btn-label').textContent = t.sendCode;
+            document.getElementById('btn-confirm').querySelector('.btn-label').textContent = t.resetPassword;
+            document.getElementById('btn-back-step').textContent = t.useAnotherEmail;
+            document.getElementById('link-back').innerHTML = t.back;
+            document.getElementById('lang-btn').innerText = t.langBtn;
+        }
+
+        function toggleTheme() {
+            isDark = !isDark;
+            document.body.classList.toggle('dark-mode');
+            document.getElementById('theme-btn').innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        }
+
+        let eyeAngle = 0;
+        function animateEyes() {
+            eyeAngle += 0.02;
+            const x = Math.cos(eyeAngle) * 5;
+            const y = Math.sin(eyeAngle) * 5;
+            const pLeft = document.getElementById('eye-p-left');
+            const pRight = document.getElementById('eye-p-right');
+            if (pLeft && pRight) {
+                pLeft.setAttribute('cx', 35 + x);
+                pLeft.setAttribute('cy', 60 + y);
+                pRight.setAttribute('cx', 85 + x);
+                pRight.setAttribute('cy', 60 + y);
+            }
+            requestAnimationFrame(animateEyes);
+        }
+
+        updateText();
+        animateEyes();
+    </script>
+</body>
+</html>

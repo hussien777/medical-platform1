@@ -111,3 +111,38 @@ class DoctorRegisterSerializer(serializers.Serializer):
             raise serializers.ValidationError(errors)
 
         return data
+
+
+
+# =========================
+# PASSWORD RESET REQUEST
+# =========================
+class PasswordResetRequestSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+
+# =========================
+# PASSWORD RESET CONFIRM
+# =========================
+class PasswordResetConfirmSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    otp_code = serializers.CharField(max_length=6)
+    new_password = serializers.CharField(write_only=True)
+    confirm_password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        new_password = data.get("new_password")
+        confirm_password = data.get("confirm_password")
+
+        errors = {}
+
+        if new_password != confirm_password:
+            errors["password"] = "Passwords do not match"
+
+        if new_password and len(new_password) < 8:
+            errors["password"] = "Password must be at least 8 characters"
+
+        if errors:
+            raise serializers.ValidationError(errors)
+
+        return data

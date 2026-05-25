@@ -51,11 +51,7 @@ def send_scan_to_ai_model(uploaded_image):
 
         response = requests.post(
           settings.AI_MODEL_PREDICT_URL,
-          files=files,
-          timeout=settings.AI_MODEL_TIMEOUT,
-          headers={
-          "ngrok-skip-browser-warning": "true"
-    }
+          files=files
 )
 
         response_data = response.json()

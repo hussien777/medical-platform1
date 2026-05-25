@@ -16,3 +16,13 @@ staticfiles/
 
 .vscode/
 *.log
+
+# AI model weights - do not upload to GitHub
+Eye_Care_AI_Server/models/
+*.pth
+
+# Local secrets
+.env
+
+# Uploaded media files
+media/

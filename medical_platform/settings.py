@@ -172,19 +172,25 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
+#Message encryption between the users 
+
+MESSAGE_ENCRYPTION_KEY = os.getenv("MESSAGE_ENCRYPTION_KEY")
+
+
+
 # =========================
 # AI MODEL API SETTINGS
 # =========================
 
 
 
-AI_MODEL_BASE_URL = "https://scavenger-wriggly-aerospace.ngrok-free.dev"
+AI_MODEL_BASE_URL = "http://127.0.0.1:5000"
 
 AI_MODEL_HEALTH_URL = f"{AI_MODEL_BASE_URL}/api/health"
 
 AI_MODEL_PREDICT_URL = f"{AI_MODEL_BASE_URL}/api/predict"
 
-AI_MODEL_TIMEOUT = 60
+
 
 #This means Django checks expired pending registrations every 10 seconds.
 OTP_CLEANUP_INTERVAL_SECONDS = 10

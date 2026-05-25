@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="html-root">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eye Care - Medical Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--teal-600:#0d9488;--teal-500:#14b8a6;--teal-400:#2dd4bf;--teal-300:#5eead4;--text-main:#2c3e50;--text-light:#6b7280;--bg-light:#f8fafc;--border-light:#e5e7eb}
+body{font-family:'Cairo',sans-serif;background:linear-gradient(135deg,rgba(0,128,128,0.1) 0%,rgba(77,182,172,0.05) 100%);color:var(--text-main);transition:0.3s}
+body.dark-mode{--text-main:#f0f0f0;--text-light:#d1d5db;--bg-light:#1f2937;--border-light:#374151;background:linear-gradient(135deg,rgba(0,128,128,0.2) 0%,rgba(77,182,172,0.1) 100%),linear-gradient(180deg,#0f172a 0%,#1a1f2e 100%);background-attachment:fixed}
+.page{display:none;min-height:100vh}
+.page.active{display:flex;flex-direction:column}
+.home-header{position:relative;padding:2rem 1.5rem;display:flex;justify-content:space-between;align-items:center;backdrop-filter:blur(4px)}
+.logo-top{position:absolute;top:1rem;left:1.5rem;width:60px;height:60px;}
+html[dir="rtl"] .logo-top{left:auto;right:1.5rem}
+.home-nav-buttons{display:flex;gap:0.75rem;margin-left:auto}
+html[dir="rtl"] .home-nav-buttons{margin-left:0;margin-right:auto}
+.btn-nav{display:flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;border-radius:0.5rem;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);backdrop-filter:blur(8px);color:var(--text-main);cursor:pointer;font-size:0.875rem;font-weight:500;transition:0.3s}
+.btn-nav:hover{background:rgba(255,255,255,0.2);transform:scale(1.05)}
+.home-main{flex:1;display:flex;align-items:center;justify-content:center;padding:3rem 1rem}
+.home-content{width:100%;max-width:42rem;text-align:center}
+.logo-svg{width:120px;height:120px;filter:drop-shadow(0 10px 15px rgba(0,0,0,0.1));margin:0 auto}
+.title{font-size:clamp(2rem,5vw,3rem);font-weight:700;margin-bottom:1rem;background:linear-gradient(to right,#0d9488,#2dd4bf);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+body.dark-mode .title{background:linear-gradient(to right,#2dd4bf,#5eead4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.subtitle{font-size:1.125rem;color:var(--text-light);margin-bottom:2rem;}
+.interfaces-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin-bottom:2rem;}
+.interface-card{padding:1.5rem;background:white;border:1px solid var(--border-light);border-radius:0.8rem;cursor:pointer;transition:0.3s;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1rem}
+body.dark-mode .interface-card{background:#1e293b;border-color:#334155}
+.interface-card:hover{transform:translateY(-4px);box-shadow:0 12px 24px rgba(13,148,136,0.2);border-color:var(--teal-500)}
+.interface-icon{font-size:2.5rem;color:var(--teal-600)}
+.interface-name{font-weight:600;color:var(--text-main);font-size:0.95rem}
+.interface-btn{background:linear-gradient(135deg,var(--teal-600),var(--teal-500));color:white;padding:0.5rem 1.5rem;border:none;border-radius:0.6rem;cursor:pointer;font-weight:600;font-family:'Cairo',sans-serif;transition:0.3s;font-size:0.85rem}
+header{background:linear-gradient(135deg,var(--teal-600),var(--teal-500));color:white;padding:2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+header h1{font-size:1.8rem}
+.btns{display:flex;gap:1rem}
+.icon-btn{width:40px;height:40px;border:none;border-radius:50%;background:rgba(255,255,255,0.2);color:white;cursor:pointer;font-size:1.2rem;transition:0.3s;display:flex;align-items:center;justify-content:center}
+.nav{background:white;border-bottom:2px solid #e2e8f0;display:flex;gap:2rem;padding:0 2rem;position:sticky;top:80px;z-index:99;overflow-x:auto}
+body.dark-mode .nav{background:#1e293b;border-bottom-color:#334155}
+.nav-btn{padding:1rem 0;border:none;background:none;cursor:pointer;font-weight:600;color:#64748b;border-bottom:3px solid transparent;font-family:'Cairo',sans-serif;white-space:nowrap;transition:0.3s}
+.nav-btn.active{color:var(--teal-600);border-bottom-color:var(--teal-600)}
+main{max-width:1200px;margin:0 auto;padding:2rem;flex:1}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+.card{background:white;border:1px solid #e2e8f0;border-radius:0.8rem;overflow:hidden;transition:0.3s;position:relative}
+body.dark-mode .card{background:#1e293b;border-color:#334155}
+.card-header{padding:1.5rem;background:linear-gradient(135deg,rgba(13,148,136,0.05),rgba(20,184,166,0.05));border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center}
+body.dark-mode .card-header{border-bottom-color:#334155}
+.card-title{font-size:1.2rem;font-weight:700}
+.card-content{padding:1.5rem}
+.btn{background:linear-gradient(135deg,var(--teal-600),var(--teal-500));color:white;padding:0.5rem 1rem;border:none;border-radius:0.6rem;font-family:'Cairo',sans-serif;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;font-size:0.85rem;transition:0.3s}
+.item{display:flex;justify-content:space-between;align-items:center;padding:1.25rem;border:1px solid #e2e8f0;border-radius:0.6rem;background:white;margin-bottom:1rem;transition:0.3s}
+body.dark-mode .item{background:#1e293b;border-color:#334155}
+.item-info{display:flex;gap:1rem;align-items:center;flex:1}
+.item-icon{font-size:2rem;color:var(--teal-600)}
+.item-details h4{font-weight:700;margin-bottom:0.25rem}
+.item-details p{font-size:0.85rem;color:#64748b}
+.tab{display:none}
+.tab.active{display:block}
+.empty{text-align:center;padding:3rem 1rem}
+.empty-icon{font-size:3rem;margin-bottom:1rem;color:var(--teal-600)}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center}
+.modal.active{display:flex}
+.modal-content{background:white;border-radius:1rem;padding:2rem;max-width:600px;width:90%;max-height:80vh;overflow-y:auto}
+body.dark-mode .modal-content{background:#1e293b}
+.modal-header{font-size:1.5rem;font-weight:700;margin-bottom:1.5rem}
+.chat-box{height:400px;border:1px solid #e2e8f0;border-radius:0.8rem;padding:1rem;overflow-y:auto;margin-bottom:1rem;background:#f8fafc}
+body.dark-mode .chat-box{background:#0f172a;border-color:#334155}
+.msg{margin-bottom:1rem;display:flex}
+.msg.sent{justify-content:flex-end}
+.bubble{padding:0.75rem 1rem;border-radius:0.8rem;max-width:70%;word-wrap:break-word}
+.msg.received .bubble{background:#e2e8f0;color:#1e293b}
+body.dark-mode .msg.received .bubble{background:#334155;color:#f1f5f9}
+.msg.sent .bubble{background:linear-gradient(135deg,var(--teal-600),var(--teal-500));color:white}
+.chat-input{display:flex;gap:0.5rem}
+.chat-input input{flex:1;padding:0.75rem;border:2px solid #e2e8f0;border-radius:0.6rem;font-family:'Cairo',sans-serif;background:white;color:#1e293b}
+body.dark-mode .chat-input input{background:#0f172a;color:#f1f5f9;border-color:#334155}
+.chat-input button{padding:0.75rem 1.5rem;background:linear-gradient(135deg,var(--teal-600),var(--teal-500));color:white;border:none;border-radius:0.6rem;cursor:pointer;font-weight:600;font-family:'Cairo',sans-serif;transition:0.3s}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;margin-bottom:0.5rem;font-weight:600}
+.form-group input,.form-group select{width:100%;padding:0.75rem;border:1px solid #e2e8f0;border-radius:0.6rem;background:white;color:#1e293b;font-family:'Cairo',sans-serif}
+body.dark-mode .form-group input,body.dark-mode .form-group select{background:#0f172a;color:#f1f5f9;border-color:#334155}
+.back-home-btn{background:linear-gradient(135deg,var(--teal-600),var(--teal-500));color:white;padding:1rem 2rem;border:none;border-radius:0.6rem;cursor:pointer;font-weight:600;font-family:'Cairo',sans-serif;transition:0.3s;width:100%;margin-top:2rem;font-size:1rem}
+.star{font-size:2rem;cursor:pointer;color:#d1d5db;transition:0.2s;margin:0 0.25rem}
+.star.filled{color:#fbbf24}
+.stars{text-align:center;margin:1rem 0}
+
+/* Eye Analysis specific styles */
+.upload-area{border:2px dashed #cbd5e1;border-radius:1rem;padding:3rem 2rem;text-align:center;cursor:pointer;transition:0.3s;background:white;display:flex;flex-direction:column;align-items:center;gap:1rem;width:100%;margin-bottom:1.5rem}
+body.dark-mode .upload-area{background:#1e293b;border-color:#475569}
+.upload-area:hover{border-color:var(--teal-500);background:rgba(13,148,136,0.05)}
+.upload-icon{font-size:3.5rem;color:var(--teal-500)}
+.upload-text{font-weight:600;color:var(--text-main);font-size:1.1rem}
+#eyeImageInput{display:none}
+.analysis-img{width:100%;border-radius:10px;margin-top:10px;display:none}
+.bar-container{margin-bottom:12px}
+.bar-label{font-size:14px;margin-bottom:4px}
+.bar-bg{height:10px;background:#ddd;border-radius:10px;overflow:hidden}
+.bar-fill{height:100%;background:#e74c3c;width:0%}
+.bar-fill.green{background:#2ecc71}
+.confidence-badge{color:#d63031;font-weight:bold;margin-top:10px}
+.analysis-list{padding-left:20px;line-height:1.8}
+html[dir="rtl"] .analysis-list{padding-left:0;padding-right:20px}
+
+/* Filter styles */
+.filter-btn{background:none;border:none;color:var(--teal-600);cursor:pointer;font-size:1.2rem;padding:0.5rem;transition:0.3s}
+.filter-dropdown{display:none;position:absolute;top:3.5rem;right:1.5rem;background:white;border:1px solid var(--border-light);border-radius:0.6rem;box-shadow:0 10px 20px rgba(0,0,0,0.1);z-index:100;min-width:160px}
+html[dir="ltr"] .filter-dropdown{right:1.5rem}
+html[dir="rtl"] .filter-dropdown{right:auto;left:1.5rem}
+body.dark-mode .filter-dropdown{background:#1e293b;border-color:#334155}
+.filter-dropdown.active{display:block}
+.filter-option{padding:0.75rem 1rem;cursor:pointer;font-size:0.9rem;transition:0.2s;display:flex;align-items:center;gap:0.5rem}
+.filter-option:hover{background:var(--bg-light)}
+body.dark-mode .filter-option:hover{background:#334155}
+
+/* Custom Message Box */
+.msg-box{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:2rem;border-radius:1rem;box-shadow:0 20px 40px rgba(0,0,0,0.2);z-index:2000;text-align:center;min-width:300px;border:2px solid var(--teal-500)}
+body.dark-mode .msg-box{background:#1e293b;border-color:var(--teal-600)}
+.msg-box-icon{font-size:3rem;color:var(--teal-500);margin-bottom:1rem}
+.msg-box-text{font-size:1.1rem;font-weight:600;margin-bottom:1.5rem}
+
+/* Calendar & Times */
+.calendar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:0.3rem;margin-bottom:1rem}
+.cal-day-name{text-align:center;font-size:0.8rem;font-weight:bold;color:var(--text-light)}
+.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:0.5rem;cursor:pointer;font-size:0.9rem;border:1px solid transparent}
+.cal-day:hover{background:var(--bg-light);border-color:var(--teal-300)}
+.cal-day.selected{background:var(--teal-500);color:white}
+.cal-day.today{border:1px solid var(--teal-500);font-weight:bold}
+.cal-day.disabled{opacity:0.3;cursor:default}
+.times-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-top:1rem}
+.time-slot{padding:0.5rem;border:1px solid #e2e8f0;border-radius:0.5rem;text-align:center;cursor:pointer;font-size:0.9rem}
+.time-slot.selected{background:var(--teal-500);color:white;border-color:var(--teal-600)}
+
+@media (max-width:768px){header{flex-direction:column;gap:1rem}.nav{gap:1rem;padding:0 1rem}.item{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+
+<div id="homePage" class="page active">
+    <div class="home-header">
+        <svg class="logo-top" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+            <g class="eye-group">
+                <circle cx="35" cy="60" r="28" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--teal-600)"/>
+                <circle cx="35" cy="60" r="18" fill="currentColor" style="color:var(--teal-500)"/>
+                <circle cx="35" cy="60" r="10" fill="white" class="pupil-left-corner"/>
+            </g>
+            <g class="eye-group">
+                <circle cx="85" cy="60" r="28" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--teal-600)"/>
+                <circle cx="85" cy="60" r="18" fill="currentColor" style="color:var(--teal-500)"/>
+                <circle cx="85" cy="60" r="10" fill="white" class="pupil-right-corner"/>
+            </g>
+        </svg>
+        <div class="home-nav-buttons">
+            <button class="btn-nav" id="theme-btn"><span id="theme-icon"><i class="fa-solid fa-moon"></i></span><span id="theme-text">Dark</span></button>
+            <button class="btn-nav" id="lang-btn"><span><i class="fa-solid fa-globe"></i></span><span id="lang-text">العربية</span></button>
+        </div>
+    </div>
+<div class="home-main">
+        <div class="home-content">
+            <div class="logo-container">
+                <svg class="logo-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                    <g class="eye-group">
+                        <circle cx="35" cy="60" r="28" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--teal-600)"/>
+                        <circle cx="35" cy="60" r="18" fill="currentColor" style="color:var(--teal-500)"/>
+                        <circle cx="35" cy="60" r="10" fill="white"/>
+                    </g>
+                    <g class="eye-group">
+                        <circle cx="85" cy="60" r="28" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--teal-600)"/>
+                        <circle cx="85" cy="60" r="18" fill="currentColor" style="color:var(--teal-500)"/>
+                        <circle cx="85" cy="60" r="10" fill="white"/>
+                    </g>
+                </svg>
+            </div>
+            <h1 class="title" id="home-title">Welcome to Eye Care</h1>
+            <p class="subtitle" id="home-subtitle">Select the service you want to access</p>
+            <div class="interfaces-grid" id="interfacesGrid"></div>
+        </div>
+    </div>
+</div>
+
+<div id="appPage" class="page">
+    <header>
+        <h1 id="greeting">Welcome</h1>
+        <div class="btns">
+            <button class="icon-btn" id="themeBtn"><i class="fa-solid fa-moon"></i></button>
+            <button class="icon-btn" id="langBtn">AR</button>
+        </div>
+    </header>
+    <div class="nav">
+        <button class="nav-btn active" onclick="switchTab('dashboard')"><span id="nav-dash">Dashboard</span></button>
+        <button class="nav-btn" onclick="switchTab('doctors')"><span id="nav-docs">Doctors</span></button>
+        <button class="nav-btn" onclick="switchTab('appointments')"><span id="nav-apps">Appointments</span></button>
+        <button class="nav-btn" onclick="switchTab('messages')"><span id="nav-msgs">Messages</span></button>
+        <button class="nav-btn" onclick="switchTab('admin')"><span id="nav-admin">Admin</span></button>
+        <button class="nav-btn" onclick="switchTab('exam')"><span id="nav-exam">Eye Analysis</span></button>
+        <button class="nav-btn" onclick="switchTab('profile')"><span id="nav-prof">Profile</span></button>
+    </div>
+    <main>
+        <div id="dashboard" class="tab active">
+            <div class="grid">
+                <div class="card">
+                    <div class="card-header"><div class="card-title" id="t-patient-info">Patient Information</div></div>
+                    <div class="card-content">
+                        <div style="display:flex;flex-direction:column;gap:0.8rem">
+                            <div><span style="font-weight:700;color:var(--teal-600)" id="t-name">Name:</span> <span id="displayPatientName">-</span></div>
+                            <div><span style="font-weight:700;color:var(--teal-600)" id="t-gender">Gender:</span> <span id="displayPatientGender">-</span></div>
+                            <div><span style="font-weight:700;color:var(--teal-600)" id="t-age">Age:</span> <span id="displayPatientAge">-</span></div>
+                            <div><span style="font-weight:700;color:var(--teal-600)" id="t-province">Province:</span> <span id="displayPatientProvince">-</span></div>
+                            <div><span style="font-weight:700;color:var(--teal-600)" id="t-email">Email:</span> <span id="displayPatientEmail">-</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-title" id="t-total-exams">Total Exams</div></div>
+                    <div class="card-content"><div style="font-size:2.5rem;font-weight:700;color:var(--teal-600)" id="totalExams">0</div></div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><div class="card-title" id="t-upcoming-apps">Upcoming Appointments</div></div>
+                    <div class="card-content"><div style="font-size:2.5rem;font-weight:700;color:var(--teal-600)" id="upcomingApps">0</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="doctors" class="tab">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title" id="t-doctors-list">Doctors List</div>
+                    <button class="filter-btn" onclick="toggleFilter('doctorsFilter')"><i class="fa-solid fa-filter"></i></button>
+                    <div class="filter-dropdown" id="doctorsFilter">
+                        <div class="filter-option" onclick="applyFilter('doctors', 'newest')"><i class="fa-solid fa-clock"></i> <span id="t-f-newest">Newest</span></div>
+                        <div class="filter-option" onclick="applyFilter('doctors', 'oldest')"><i class="fa-solid fa-history"></i> <span id="t-f-oldest">Oldest</span></div>
+                        <div class="filter-option" onclick="applyFilter('doctors', 'az')"><i class="fa-solid fa-sort-alpha-down"></i> <span id="t-f-az">A-Z</span></div>
+                    </div>
+                </div>
+                <div class="card-content" id="doctorsList"></div>
+            </div>
+        </div>
+
+        <div id="appointments" class="tab">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title" id="t-appointments">Appointments</div>
+                    <button class="filter-btn" onclick="toggleFilter('appsFilter')"><i class="fa-solid fa-filter"></i></button>
+                    <div class="filter-dropdown" id="appsFilter">
+                        <div class="filter-option" onclick="applyFilter('apps', 'newest')"><i class="fa-solid fa-clock"></i> <span id="t-f-newest2">Newest</span></div>
+                        <div class="filter-option" onclick="applyFilter('apps', 'oldest')"><i class="fa-solid fa-history"></i> <span id="t-f-oldest2">Oldest</span></div>
+                        <div class="filter-option" onclick="applyFilter('apps', 'az')"><i class="fa-solid fa-sort-alpha-down"></i> <span id="t-f-az2">A-Z</span></div>
+                    </div>
+                </div>
+                <div class="card-content" id="appointmentsList"></div>
+            </div>
+        </div>
+
+        <div id="messages" class="tab">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title" id="t-messages">Messages</div>
+                    <button class="filter-btn" onclick="toggleFilter('msgsFilter')"><i class="fa-solid fa-filter"></i></button>
+                    <div class="filter-dropdown" id="msgsFilter">
+                        <div class="filter-option" onclick="applyFilter('msgs', 'newest')"><i class="fa-solid fa-clock"></i> <span id="t-f-newest3">Newest</span></div>
+                        <div class="filter-option" onclick="applyFilter('msgs', 'oldest')"><i class="fa-solid fa-history"></i> <span id="t-f-oldest3">Oldest</span></div>
+                        <div class="filter-option" onclick="applyFilter('msgs', 'az')"><i class="fa-solid fa-sort-alpha-down"></i> <span id="t-f-az3">A-Z</span></div>
+                    </div>
+                </div>
+                <div class="card-content" id="messagesList"></div>
+            </div>
+        </div>
+
+        <div id="admin" class="tab">
+            <div class="card">
+                <div class="card-header"><div class="card-title" id="t-admin-chat">Admin Support</div></div>
+                <div class="card-content">
+                    <div class="chat-box" id="adminChatBox"></div>
+                    <div class="chat-input">
+                        <input type="text" id="adminChatInput" placeholder="Type your message...">
+                        <button onclick="sendAdminMsg()" id="t-send-btn">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="exam" class="tab">
+            <div class="card">
+                <div class="card-header"><div class="card-title" id="t-eye-exam">Eye Photo Analysis</div></div>
+                <div class="card-content">
+                    <div class="upload-area" onclick="document.getElementById('eyeImageInput').click()">
+                        <div class="upload-icon"><i class="fa-solid fa-eye"></i></div>
+                        <div class="upload-text" id="t-upload-text">Upload Eye Photo (JPG/PNG)</div>
+                        <input type="file" id="eyeImageInput" accept=".jpg,.jpeg,.png" onchange="handleImage(this)">
+                    </div>
+                    <img id="analysisPreview" class="analysis-img">
+                    <button class="btn" style="width:100%; margin-top:10px" onclick="runAnalysis()" id="t-analyze-btn">Analyze Image</button>
+                    
+                    <div id="analysisResult" style="display:none; margin-top:20px">
+                        <h3 id="predictionTitle" style="color:var(--teal-600); margin-bottom:15px"></h3>
+                        <div id="probBars"></div>
+                        <div class="confidence-badge" id="confidenceVal"></div>
+                        <h3 style="margin-top:15px" id="t-findings-title">Findings:</h3>
+                        <ul id="findingsList" class="analysis-list"></ul>
+                        <h3 style="margin-top:15px" id="t-recom-title">Recommendations:</h3>
+                        <ul id="recomList" class="analysis-list"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="profile" class="tab">
+            <div class="card">
+                <div class="card-header"><div class="card-title" id="t-edit-profile">Profile Settings</div></div>
+                <div class="card-content">
+                    <div style="display:flex;flex-direction:column;gap:1rem">
+                        <div class="form-group"><label id="t-full-name">Full Name</label><input type="text" id="inputName"></div>
+                        <div class="form-group"><label id="t-select-gender">Gender</label><select id="inputGender"><option value="">Select Gender</option></select></div>
+                        <div class="form-group"><label id="t-birth-date">Birth Date</label><input type="date" id="inputBirthDate"></div>
+                        <div class="form-group"><label id="t-age-label">Age</label><input type="number" id="inputAge" readonly></div>
+                        <div class="form-group"><label id="t-select-province">Province</label><select id="inputProvince"><option value="">Select Province</option></select></div>
+                        <div class="form-group"><label id="t-email-label">Email</label><input type="email" id="inputEmail"></div>
+                        <button class="btn" style="width:100%;justify-content:center" onclick="saveProfile()" id="t-save-btn">Save Profile</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="back-home-btn" onclick="goHome()" id="back-home">Back to Home</button>
+    </main>
+</div>
+
+<!-- Modals -->
+<div id="doctorChatModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header" id="doctorChatTitle">Doctor Chat</div>
+        <div class="chat-box" id="doctorChatBox"></div>
+        <div class="chat-input">
+            <input type="text" id="doctorChatInput" placeholder="Type your message...">
+            <button onclick="sendDoctorMsg()" id="t-send-doc">Send</button>
+        </div>
+        <button class="btn" style="width:100%;margin-top:1rem;justify-content:center" onclick="closeDoctorChat()" id="t-close-btn">Close</button>
+    </div>
+</div>
+
+<div id="bookingModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header" id="bookingTitle">Book Appointment</div>
+        <div id="bookingContent">
+            <div class="calendar-header">
+                <button onclick="prevMonth()" class="btn"><i class="fa-solid fa-chevron-left"></i></button>
+                <h4 id="calMonthYear"></h4>
+                <button onclick="nextMonth()" class="btn"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+            <div class="calendar-grid" id="calGrid"></div>
+            <h4 id="t-select-time" style="margin-top:1rem">Select Time</h4>
+            <div id="bookingTimes" class="times-grid"></div>
+            <button class="btn" style="width:100%; margin-top:1.5rem; justify-content:center" onclick="confirmBooking()">Confirm Booking</button>
+        </div>
+        <button class="btn" style="width:100%;margin-top:1rem;justify-content:center; background:#ccc" onclick="document.getElementById('bookingModal').classList.remove('active')">Cancel</button>
+    </div>
+</div>
+
+<div id="ratingModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header" id="t-rating-title">Rate Doctor</div>
+        <div id="ratingContent"></div>
+        <button class="btn" style="width:100%;margin-top:1rem;justify-content:center" onclick="document.getElementById('ratingModal').classList.remove('active')">Close</button>
+    </div>
+</div>
+
+<div id="customMsgBox" class="msg-box">
+    <div class="msg-box-icon"><i class="fa-solid fa-circle-check"></i></div>
+    <div class="msg-box-text" id="msgBoxText">Success!</div>
+    <button class="btn" style="width:100%;justify-content:center" onclick="closeMsgBox()">OK</button>
+</div>
+
+<script>
+// ==================== إعدادات API ====================
+const BASE_URL = 'http://127.0.0.1:8000';
+
+let ACCESS_TOKEN =
+    sessionStorage.getItem('access_token') ||
+    localStorage.getItem('access_token') ||
+    '';
+
+function saveAccessToken(token) {
+    ACCESS_TOKEN = token || '';
+    if (token) {
+        sessionStorage.setItem('access_token', token);
+        localStorage.setItem('access_token', token);
+    }
+}
+
+function getRefreshToken() {
+    return sessionStorage.getItem('refresh_token') || localStorage.getItem('refresh_token') || '';
+}
+
+function getHeaders() {
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + ACCESS_TOKEN
+    };
+}
+
+function redirectToLoginIfNeeded() {
+    showMsgBox('Please login again.');
+    setTimeout(() => {
+        window.location.href = 'log.html';
+    }, 1200);
+}
+
+async function refreshAccessToken() {
+    const refreshToken = getRefreshToken();
+
+    if (!refreshToken) {
+        return false;
+    }
+
+    try {
+        const res = await fetch(BASE_URL + '/api/token/refresh/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refresh: refreshToken })
+        });
+
+        if (!res.ok) {
+            return false;
+        }
+
+        const data = await res.json();
+
+        if (!data.access) {
+            return false;
+        }
+
+        saveAccessToken(data.access);
+        return true;
+
+    } catch (e) {
+        console.error('Token refresh error:', e);
+        return false;
+    }
+}
+
+async function apiCall(method, endpoint, body, retry = true) {
+    try {
+        const opts = { method, headers: getHeaders() };
+
+        if (body) {
+            opts.body = JSON.stringify(body);
+        }
+
+        let res = await fetch(BASE_URL + endpoint, opts);
+
+        if (res.status === 401 && retry) {
+            const refreshed = await refreshAccessToken();
+
+            if (refreshed) {
+                return apiCall(method, endpoint, body, false);
+            }
+
+            redirectToLoginIfNeeded();
+            return null;
+        }
+
+        if (res.ok) {
+            const ct = res.headers.get('content-type');
+
+            if (ct && ct.includes('application/json')) {
+                return await res.json();
+            }
+
+            return {};
+        }
+
+        let errorData = {};
+        try {
+            errorData = await res.json();
+        } catch (e) {}
+
+        console.error('API Error:', endpoint, res.status, errorData);
+        return null;
+
+    } catch (e) {
+        console.error('API Error:', e);
+        return null;
+    }
+}
+
+async function apiFormData(endpoint, formData, retry = true) {
+    try {
+        let res = await fetch(BASE_URL + endpoint, {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + ACCESS_TOKEN },
+            body: formData
+        });
+
+        if (res.status === 401 && retry) {
+            const refreshed = await refreshAccessToken();
+
+            if (refreshed) {
+                return apiFormData(endpoint, formData, false);
+            }
+
+            redirectToLoginIfNeeded();
+            return null;
+        }
+
+        if (res.ok) {
+            const ct = res.headers.get('content-type');
+
+            if (ct && ct.includes('application/json')) {
+                return await res.json();
+            }
+
+            return {};
+        }
+
+        let errorData = {};
+        try {
+            errorData = await res.json();
+        } catch (e) {}
+
+        console.error('Form API Error:', endpoint, res.status, errorData);
+        return null;
+
+    } catch (e) {
+        console.error('API Error:', e);
+        return null;
+    }
+}
+
+// ==================== جلب بيانات من API ====================
+
+async function loadPatientProfile() {
+    // GET /api/patient/profile/
+    const data = await apiCall('GET', '/api/patient/profile/');
+    if (data) {
+        patient.name      = data.full_name || data.name || '';
+        patient.gender    = data.gender || '';
+        patient.birthDate = data.birth_date || data.birthDate || '';
+        patient.age       = data.age || '';
+        patient.province  = data.province || data.city || '';
+        patient.email     = data.email || '';
+        document.getElementById('inputName').value      = patient.name;
+        document.getElementById('inputGender').value    = patient.gender;
+        document.getElementById('inputBirthDate').value = patient.birthDate;
+        document.getElementById('inputAge').value       = patient.age;
+        document.getElementById('inputProvince').value  = patient.province;
+        document.getElementById('inputEmail').value     = patient.email;
+        updateGreeting();
+        updateDash();
+    }
+}
+
+async function loadDashboard() {
+    // GET /api/patient/dashboard/
+    const data = await apiCall('GET', '/api/patient/dashboard/');
+    if (data) {
+        if (data.upcoming_appointments !== undefined) document.getElementById('upcomingApps').textContent = data.upcoming_appointments;
+        if (data.total_exams !== undefined) document.getElementById('totalExams').textContent = data.total_exams;
+        if (data.name || data.full_name) {
+            patient.name = data.full_name || data.name;
+            updateGreeting();
+        }
+        updateDash();
+    }
+}
+
+async function loadDoctors() {
+    const data = await apiCall('GET', '/api/patient/doctors/');
+
+    if (data) {
+        const list = Array.isArray(data) ? data : (data.results || data.doctors || []);
+
+        doctors = list.map(d => ({
+            id: d.doctor_id || d.id,
+            ar: d.full_name || d.name || '',
+            en: d.full_name || d.name || '',
+            ar_spec: d.specialty || d.specialization || d.university || d.university_name || '',
+            en_spec: d.specialty || d.specialization || d.university || d.university_name || '',
+            rating: d.average_rating || d.rating || 0,
+            rating_count: d.rating_count || d.ratings_count || 0
+        }));
+
+        showDocs();
+    }
+}
+
+async function loadAppointments() {
+    // GET /api/patient/appointments/ (نفس endpoint الأطباء لأن API المواعيد هو POST فقط للحجز)
+    const data = await apiCall('GET', '/api/patient/appointments/');
+    if (data) {
+        const list = Array.isArray(data) ? data : (data.results || data.appointments || []);
+        apps = list.map(a => ({
+            id: a.id,
+            doc: a.doctor_name || a.doctor || '',
+            date: (a.date || a.appointment_date || '').slice(0, 10),
+            time: a.time || a.appointment_time || '',
+            status: a.status || 'confirmed'
+        }));
+        showApps();
+        updateDash();
+    }
+}
+
+async function loadAdminChat() {
+    // GET /api/patient/support-chats/
+    const data = await apiCall('GET', '/api/patient/support-chats/');
+    if (data) {
+        const list = Array.isArray(data) ? data : (data.results || []);
+        adminChat = [];
+        if (list.length > 0) {
+            // جلب رسائل أول محادثة دعم
+            activeSupportChatId = list[0].id;
+            const chat = await apiCall('GET', '/api/patient/support-chats/' + activeSupportChatId + '/messages/');
+            if (chat) {
+                const msgs = Array.isArray(chat) ? chat : (chat.results || chat.messages || []);
+                adminChat = msgs.map(m => ({
+                    text: m.message || m.content || m.text || '',
+                    sent: m.sender === 'patient' || m.is_patient || m.role === 'patient'
+                }));
+            }
+        }
+        renderAdminChat();
+    }
+}
+
+async function loadDoctorChatHistory(doctorId) {
+    const data = await apiCall('POST', '/api/patient/chats/', {
+        doctor_id: doctorId
+    });
+
+    if (!data || !data.chat) {
+        showMsgBox('Could not open doctor chat.');
+        return;
+    }
+
+    activeDoctorChatId = data.chat.chat_id;
+
+    const messagesData = await apiCall(
+        'GET',
+        '/api/patient/chats/' + activeDoctorChatId + '/messages/'
+    );
+
+    const msgs = messagesData
+        ? (messagesData.messages || messagesData.results || [])
+        : [];
+
+    docChats[currentDoc] = msgs.map(m => ({
+        text: m.text_content || m.message || m.content || '',
+        sent: m.sender_role === 'patient' || m.sender === 'patient' || m.role === 'patient'
+    }));
+
+    renderDoctorChat();
+}
+
+// ==================== المتغيرات الأساسية ====================
+let lang = 'en';
+let isDark = localStorage.getItem('theme') === 'dark';
+let currentDoc = null;
+let activeSupportChatId = null;
+let activeDoctorChatId = null;
+let patient = { name:'', gender:'', birthDate:'', age:0, province:'', email:'' };
+let docChats = {};
+let adminChat = [];
+let apps = [];
+let doctors = [];
+let ratings = {};
+let ratingCounts = {};
+
+const provinces = [
+    {ar:'عمّان',en:'Amman'},{ar:'الزرقاء',en:'Zarqa'},{ar:'إربد',en:'Irbid'},{ar:'جرش',en:'Jerash'},
+    {ar:'عجلون',en:'Ajloun'},{ar:'المفرق',en:'Mafraq'},{ar:'البلقاء',en:'Balqa'},{ar:'مادبا',en:'Madaba'},
+    {ar:'الكرك',en:'Karak'},{ar:'الطفيلة',en:'Tafila'},{ar:'معان',en:'Ma\'an'},{ar:'العقبة',en:'Aqaba'}
+];
+
+const interfaces = [
+    {ar:'لوحة التحكم', en:'Dashboard', icon:'fa-hospital', tab:'dashboard'},
+    {ar:'الأطباء', en:'Doctors', icon:'fa-user-doctor', tab:'doctors'},
+    {ar:'المواعيد', en:'Appointments', icon:'fa-calendar-check', tab:'appointments'},
+    {ar:'الرسائل', en:'Messages', icon:'fa-envelope', tab:'messages'},
+    {ar:'المسؤول', en:'Admin', icon:'fa-user-shield', tab:'admin'},
+    {ar:'تحليل العين', en:'Eye Analysis', icon:'fa-eye', tab:'exam'},
+    {ar:'الملف الشخصي', en:'Profile', icon:'fa-user-gear', tab:'profile'}
+];
+
+const trans = {
+    ar: {
+        'home-title':'مرحباً بك في Eye Care',
+        'home-subtitle':'اختر الخدمة التي تريد الوصول إليها',
+        'patient-info':'معلومات المريض',
+        'name':'الاسم:',
+        'gender':'الجنس:',
+        'age':'العمر:',
+        'province':'المحافظة:',
+        'email':'البريد الإلكتروني:',
+        'total-exams':'إجمالي الفحوصات',
+        'upcoming-apps':'المواعيد المقبلة',
+        'doctors-list':'قائمة الأطباء',
+        'no-doctors':'لا يوجد أطباء',
+        'appointments':'المواعيد',
+        'no-appointments':'لا توجد مواعيد',
+        'messages':'الرسائل',
+        'no-messages':'لا توجد رسائل',
+        'admin-chat':'الدعم الفني',
+        'send-btn':'إرسال',
+        'eye-exam':'تحليل صورة العين',
+        'upload-text':'تحميل صورة العين (JPG/PNG)',
+        'analyze-btn':'تحليل الصورة',
+        'edit-profile':'إعدادات الملف الشخصي',
+        'full-name':'الاسم الكامل',
+        'select-gender':'الجنس',
+        'birth-date':'تاريخ الميلاد',
+        'age-label':'العمر',
+        'select-province':'المحافظة',
+        'email-label':'البريد الإلكتروني',
+        'save-btn':'حفظ الملف الشخصي',
+        'chat':'محادثة',
+        'book':'حجز',
+        'rate':'تقييم',
+        'close-btn':'إغلاق',
+        'send-doc':'إرسال',
+        'rating-title':'تقييم الطبيب',
+        'select-stars':'اختر عدد النجوم:',
+        'confirm-rating':'تأكيد التقييم',
+        'booking-title':'حجز موعد',
+        'available-days':'الأيام المتاحة',
+        'select-time':'اختر الوقت',
+        'confirm-booking':'تأكيد الحجز',
+        'booking-confirmed':'تم تأكيد الحجز بنجاح',
+        'confirmed':'مؤكد',
+        'admin-reply':'شكراً لتواصلك معنا، سنرد عليك قريباً',
+        'doctor-reply':'وصلت رسالتك، سأقوم بالرد في أقرب وقت',
+        'success':'تم حفظ معلوماتك بنجاح',
+        'male':'ذكر',
+        'female':'أنثى',
+        'select-gender-opt':'اختر الجنس',
+        'select-province-opt':'اختر المحافظة',
+        'type-message':'اكتب رسالتك هنا...',
+        'theme-dark':'ليلي',
+        'theme-light':'نهاري',
+        'nav-dash':'لوحة التحكم',
+        'nav-docs':'الأطباء',
+        'nav-apps':'المواعيد',
+        'nav-msgs':'الرسائل',
+        'nav-admin':'المسؤول',
+        'nav-exam':'تحليل العين',
+        'nav-prof':'الملف الشخصي',
+        'back-home':'العودة للرئيسية',
+        'enter-btn':'دخول',
+        'findings-title':'النتائج:',
+        'recom-title':'التوصيات:',
+        'invalid-file':'يرجى رفع صورة بصيغة JPG فقط',
+        'upload-first':'ارفع صورة أولاً',
+        'f-newest':'الأحدث',
+        'f-oldest':'الأقدم',
+        'f-az':'من أ إلى ي'
+    },
+    en: {
+        'home-title':'Welcome to Eye Care',
+        'home-subtitle':'Select the service you want to access',
+        'patient-info':'Patient Information',
+        'name':'Name:',
+        'gender':'Gender:',
+        'age':'Age:',
+        'province':'Province:',
+        'email':'Email:',
+        'total-exams':'Total Exams',
+        'upcoming-apps':'Upcoming Appointments',
+        'doctors-list':'Doctors List',
+        'no-doctors':'No doctors found',
+        'appointments':'Appointments',
+        'no-appointments':'No appointments found',
+        'messages':'Messages',
+        'no-messages':'No messages found',
+        'admin-chat':'Admin Support',
+        'send-btn':'Send',
+        'eye-exam':'Eye Photo Analysis',
+        'upload-text':'Upload Eye Photo (JPG/PNG)',
+        'analyze-btn':'Analyze Image',
+        'edit-profile':'Profile Settings',
+        'full-name':'Full Name',
+        'select-gender':'Gender',
+        'birth-date':'Birth Date',
+        'age-label':'Age',
+        'select-province':'Province',
+        'email-label':'Email',
+        'save-btn':'Save Profile',
+        'chat':'Chat',
+        'book':'Book',
+        'rate':'Rate',
+        'close-btn':'Close',
+        'send-doc':'Send',
+        'rating-title':'Doctor Rating',
+        'select-stars':'Select stars:',
+        'confirm-rating':'Confirm Rating',
+        'booking-title':'Book Appointment',
+        'available-days':'Available Days',
+        'select-time':'Select Time',
+        'confirm-booking':'Confirm Booking',
+        'booking-confirmed':'Booking Confirmed successfully',
+        'confirmed':'Confirmed',
+        'admin-reply':'Thank you for contacting us, we will reply soon',
+        'doctor-reply':'Message received, I will reply shortly',
+        'success':'Information saved successfully',
+        'male':'Male',
+        'female':'Female',
+        'select-gender-opt':'Select Gender',
+        'select-province-opt':'Select Province',
+        'type-message':'Type your message here...',
+        'theme-dark':'Dark',
+        'theme-light':'Light',
+        'nav-dash':'Dashboard',
+        'nav-docs':'Doctors',
+        'nav-apps':'Appointments',
+        'nav-msgs':'Messages',
+        'nav-admin':'Admin',
+        'nav-exam':'Eye Analysis',
+        'nav-prof':'Profile',
+        'back-home':'Back to Home',
+        'enter-btn':'Enter',
+        'findings-title':'Findings:',
+        'recom-title':'Recommendations:',
+        'invalid-file':'Please upload JPG files only',
+        'upload-first':'Upload image first',
+        'f-newest':'Newest',
+        'f-oldest':'Oldest',
+        'f-az':'A-Z'
+    }
+};
+
+function t(key) { return trans[lang][key] || key; }
+
+function showMsgBox(text) {
+    document.getElementById('msgBoxText').textContent = text;
+    document.getElementById('customMsgBox').style.display = 'block';
+}
+
+function closeMsgBox() { document.getElementById('customMsgBox').style.display = 'none'; }
+
+function renderInterfaces() {
+    const grid = document.getElementById('interfacesGrid');
+    grid.innerHTML = interfaces.map(i => `
+        <div class="interface-card" onclick="goToApp('${i.tab}')">
+            <div class="interface-icon"><i class="fa-solid ${i.icon}"></i></div>
+            <div class="interface-name">${lang==='ar'?i.ar:i.en}</div>
+            <button class="interface-btn">${t('enter-btn')}</button>
+        </div>
+    `).join('');
+}
+
+function updateText() {
+    document.querySelectorAll('[id^="t-"]').forEach(el => {
+        const key = el.id.replace(/\d+$/, "").substring(2);
+        if (el.tagName === 'INPUT' && el.type === 'file') return;
+        el.textContent = t(key);
+    });
+    document.querySelectorAll('[id^="nav-"]').forEach(el => el.textContent = t(el.id));
+    document.getElementById('adminChatInput').placeholder = t('type-message');
+    document.getElementById('doctorChatInput').placeholder = t('type-message');
+    document.getElementById('home-title').textContent = t('home-title');
+    document.getElementById('home-subtitle').textContent = t('home-subtitle');
+    document.getElementById('back-home').textContent = t('back-home');
+    document.getElementById('langBtn').textContent = lang==='ar'?'EN':'AR';
+    
+    const themeIcon = document.getElementById('theme-icon');
+    themeIcon.innerHTML = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+    document.getElementById('theme-text').textContent = isDark?t('theme-light'):t('theme-dark');
+    
+    const themeBtn = document.getElementById('themeBtn');
+    themeBtn.innerHTML = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+    
+    document.getElementById('lang-text').textContent = lang==='ar'?'العربية':'English';
+    renderInterfaces();
+}
+
+function switchTab(tabName) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(tabName).classList.add('active');
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        if(btn.getAttribute('onclick').includes(tabName)) btn.classList.add('active');
+    });
+    if(tabName === 'dashboard')    { loadDashboard(); }
+    else if(tabName === 'doctors') { loadDoctors(); }
+    else if(tabName === 'appointments') { loadAppointments(); }
+    else if(tabName === 'messages') { showMsgs(); }
+    else if(tabName === 'admin')   { loadAdminChat(); }
+    else if(tabName === 'profile') { loadPatientProfile(); }
+}
+
+function toggleTheme() {
+    isDark = !isDark;
+    document.body.classList.toggle('dark-mode', isDark);
+    localStorage.setItem('theme', isDark?'dark':'light');
+    updateText();
+}
+
+function toggleLang() {
+    lang = lang==='ar'?'en':'ar';
+    document.getElementById('html-root').lang = lang;
+    document.getElementById('html-root').dir = lang==='ar'?'rtl':'ltr';
+    localStorage.setItem('lang', lang);
+    updateGreeting();
+    updateText();
+    fillProvinces();
+    fillGenders();
+    refreshAll();
+}
+
+function updateGreeting() {
+    const txt = lang==='ar'?'مرحباً بك':'Welcome';
+    let name = patient.name || "";
+    if (name) name = name.charAt(0).toUpperCase() + name.slice(1);
+    document.getElementById('greeting').textContent = name ? `${txt} ${name}` : txt;
+}
+
+function refreshAll() { updateDash(); showDocs(); showApps(); showMsgs(); }
+
+function calcAge() {
+    const bd = document.getElementById('inputBirthDate').value;
+    if(!bd) return;
+    const b = new Date(bd);
+    const n = new Date();
+    let a = n.getFullYear() - b.getFullYear();
+    if(n.getMonth() < b.getMonth() || (n.getMonth() === b.getMonth() && n.getDate() < b.getDate())) a--;
+    document.getElementById('inputAge').value = a;
+}
+
+function updateDash() {
+    document.getElementById('displayPatientName').textContent = patient.name || '-';
+    document.getElementById('displayPatientGender').textContent = patient.gender || '-';
+    document.getElementById('displayPatientAge').textContent = patient.age || '-';
+    document.getElementById('displayPatientProvince').textContent = patient.province || '-';
+    document.getElementById('displayPatientEmail').textContent = patient.email || '-';
+    document.getElementById('totalExams').textContent = localStorage.getItem('examsCount') || '0';
+    document.getElementById('upcomingApps').textContent = apps.length;
+}
+
+// Filter logic
+function toggleFilter(id) {
+    document.querySelectorAll('.filter-dropdown').forEach(d => {
+        if(d.id !== id) d.classList.remove('active');
+    });
+    document.getElementById(id).classList.toggle('active');
+}
+
+function applyFilter(type, mode) {
+    if(type === 'doctors') {
+        if(mode === 'az') doctors.sort((a,b) => (lang==='ar'?a.ar:a.en).localeCompare(lang==='ar'?b.ar:b.en));
+        else if(mode === 'newest') doctors.reverse();
+        showDocs();
+    } else if(type === 'apps') {
+        if(mode === 'newest') apps.sort((a,b) => new Date(b.date) - new Date(a.date));
+        else if(mode === 'oldest') apps.sort((a,b) => new Date(a.date) - new Date(b.date));
+        showApps();
+    }
+    document.querySelectorAll('.filter-dropdown').forEach(d => d.classList.remove('active'));
+}
+
+function showDocs() {
+    const list = document.getElementById('doctorsList');
+    if (!doctors.length) { list.innerHTML = `<div class="empty"><i class="fa-solid fa-user-doctor empty-icon"></i><br>${t('no-doctors')}</div>`; return; }
+    list.innerHTML = doctors.map((d, i) => {
+        const avg = d.rating ? parseFloat(d.rating).toFixed(1) : (ratingCounts[d.id] > 0 ? (ratings[d.id] / ratingCounts[d.id]).toFixed(1) : '0.0');
+        const count = d.rating_count || ratingCounts[d.id] || 0;
+        return `
+            <div class="item">
+                <div class="item-info">
+                    <div class="item-icon"><i class="fa-solid fa-user-doctor"></i></div>
+                    <div class="item-details">
+                        <h4>${lang==='ar'?d.ar:d.en} <span style="color:#fbbf24"><i class="fa-solid fa-star"></i> ${avg}</span> <small>(${count})</small></h4>
+                        <p>${lang==='ar'?d.ar_spec:d.en_spec}</p>
+                    </div>
+                </div>
+                <div class="btns">
+                    <button class="btn" onclick="openDoctorChat(${i})"><i class="fa-solid fa-comment-medical"></i> ${t('chat')}</button>
+                    <button class="btn" onclick="openBooking(${i})"><i class="fa-solid fa-calendar-plus"></i> ${t('book')}</button>
+                    <button class="btn" onclick="openRating(${i})"><i class="fa-solid fa-star-half-stroke"></i> ${t('rate')}</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+async function saveProfile() {
+    patient = {
+        name: document.getElementById('inputName').value.trim(),
+        gender: document.getElementById('inputGender').value,
+        birthDate: document.getElementById('inputBirthDate').value,
+        age: document.getElementById('inputAge').value,
+        province: document.getElementById('inputProvince').value,
+        email: document.getElementById('inputEmail').value.trim()
+    };
+    // PUT /api/patient/profile/
+    const body = {
+        full_name: patient.name,
+        gender: patient.gender,
+        birth_date: patient.birthDate,
+        province: patient.province,
+        email: patient.email
+    };
+    const data = await apiCall('PUT', '/api/patient/profile/', body);
+    if (data !== null) {
+        updateGreeting();
+        updateDash();
+        showMsgBox(t('success'));
+    } else {
+        // fallback: PATCH
+        const data2 = await apiCall('PATCH', '/api/patient/profile/', body);
+        if (data2 !== null) { updateGreeting(); updateDash(); showMsgBox(t('success')); }
+    }
+}
+
+function openRating(idx) {
+    const content = document.getElementById('ratingContent');
+    content.innerHTML = `
+        <p style="text-align:center;margin-bottom:1.5rem">${t('select-stars')}</p>
+        <div class="stars" id="ratingStars"></div>
+        <button class="btn" style="width:100%;justify-content:center;margin-top:1.5rem" onclick="confirmRating(${idx})">${t('confirm-rating')}</button>
+    `;
+    const starsDiv = document.getElementById('ratingStars');
+    for(let j=1; j<=5; j++) {
+        const s = document.createElement('span');
+        s.className = 'star';
+        s.innerHTML = '★';
+        s.onclick = () => {
+            document.querySelectorAll('.star').forEach((x, index) => x.classList.toggle('filled', index < j));
+            starsDiv.dataset.value = j;
+        };
+        starsDiv.appendChild(s);
+    }
+    document.getElementById('ratingModal').classList.add('active');
+}
+
+async function confirmRating(idx) {
+    const val = parseInt(document.getElementById('ratingStars').dataset.value);
+    if(!val) return;
+    const doctor = doctors[idx];
+    if (doctor) {
+        // POST /api/patient/doctors/{id}/rate/ أو /api/ratings/
+        await apiCall('POST', '/api/patient/doctors/' + doctor.id + '/rate/', { rating: val });
+        // fallback endpoint
+        // await apiCall('POST', '/api/ratings/', { doctor_id: doctor.id, rating: val });
+    }
+    // تحديث محلي
+    if(!ratings[idx]) ratings[idx] = 0;
+    if(!ratingCounts[idx]) ratingCounts[idx] = 0;
+    ratings[idx] += val; ratingCounts[idx] += 1;
+    document.getElementById('ratingModal').classList.remove('active');
+    showDocs();
+}
+
+// Eye Analysis Upload Fix
+function handleImage(input) {
+    const file = input.files[0];
+    const preview = document.getElementById('analysisPreview');
+
+    if (!file) return;
+
+    const validExtensions = ['.jpg', '.jpeg', '.png'];
+    const fileName = file.name.toLowerCase();
+    const isValid = validExtensions.some(ext => fileName.endsWith(ext));
+
+    if (!isValid) {
+        showMsgBox(t('invalid-file'));
+        input.value = "";
+        preview.style.display = "none";
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = e => {
+        preview.src = e.target.result;
+        preview.style.display = "block";
+    };
+
+    reader.readAsDataURL(file);
+}
+
+function renderAiResult(scanData) {
+    const scan = scanData.scan || scanData;
+    const aiText = scan.ai_result || scanData.ai_result || '';
+    const result = scan.result || scanData.result || {};
+    const className = result.class_name || scanData.class_name || scan.class_name || '';
+    const confidence = result.confidence ?? scanData.confidence ?? scan.confidence;
+    const probabilities = result.probabilities || scanData.probabilities || scan.probabilities || {};
+
+    document.getElementById("analysisResult").style.display = "block";
+
+    if (className) {
+        document.getElementById("predictionTitle").innerText = "Prediction: " + className;
+    } else {
+        document.getElementById("predictionTitle").innerText = "AI Analysis Result";
+    }
+
+    const bars = document.getElementById("probBars");
+    bars.innerHTML = "";
+
+    if (probabilities && Object.keys(probabilities).length > 0) {
+        Object.entries(probabilities).forEach(([key, val]) => {
+            const numericValue = Number(val);
+            const pct = numericValue <= 1
+                ? (numericValue * 100).toFixed(2)
+                : numericValue.toFixed(2);
+
+            bars.innerHTML += `
+                <div class="bar-container">
+                    <div class="bar-label">${key}: ${pct}%</div>
+                    <div class="bar-bg">
+                        <div class="bar-fill ${key === className ? 'green' : ''}" style="width:${pct}%"></div>
+                    </div>
+                </div>
+            `;
+        });
+    } else if (aiText) {
+        bars.innerHTML = `
+            <div style="background:rgba(13,148,136,0.08);border:1px solid var(--teal-300);border-radius:0.8rem;padding:1rem;white-space:pre-line;line-height:1.7">
+                ${aiText}
+            </div>
+        `;
+    }
+
+    if (confidence !== undefined && confidence !== null && confidence !== '') {
+        const confNum = Number(confidence);
+        const confPct = confNum <= 1
+            ? (confNum * 100).toFixed(2)
+            : confNum.toFixed(2);
+
+        document.getElementById("confidenceVal").innerText = "Confidence: " + confPct + "%";
+    } else {
+        document.getElementById("confidenceVal").innerText = "";
+    }
+
+    const findMap = {
+        "No DR": ["Retina appears healthy."],
+        "Mild": ["Few microaneurysms detected."],
+        "Moderate": ["Multiple hemorrhages observed."],
+        "Severe": ["Extensive retinal hemorrhages."],
+        "Proliferative DR": ["Neovascularization detected."]
+    };
+
+    const recMap = {
+        "No DR": ["Annual screening."],
+        "Mild": ["Follow-up 12 months."],
+        "Moderate": ["Refer to ophthalmologist."],
+        "Severe": ["Urgent referral."],
+        "Proliferative DR": ["Immediate specialist consultation."]
+    };
+
+    document.getElementById("findingsList").innerHTML = className
+        ? (findMap[className] || [className]).map(i => `<li>${i}</li>`).join('')
+        : (aiText ? `<li>${aiText}</li>` : '');
+
+    document.getElementById("recomList").innerHTML = className
+        ? (recMap[className] || []).map(i => `<li>${i}</li>`).join('')
+        : '';
+}
+
+async function runAnalysis() {
+    const input = document.getElementById('eyeImageInput');
+
+    if (!input.files[0]) {
+        showMsgBox(t('upload-first'));
+        return;
+    }
+
+    if (!ACCESS_TOKEN) {
+        showMsgBox('Please login first.');
+        return;
+    }
+
+    const analyzeBtn = document.getElementById('t-analyze-btn');
+    analyzeBtn.textContent = 'Analyzing...';
+    analyzeBtn.disabled = true;
+
+    const formData = new FormData();
+    formData.append('uploaded_image', input.files[0]);
+
+    const data = await apiFormData('/api/patient/ai-scans/', formData);
+
+    analyzeBtn.textContent = t('analyze-btn');
+    analyzeBtn.disabled = false;
+
+    if (!data) {
+        showMsgBox('Analysis failed. Please try again.');
+        return;
+    }
+
+    renderAiResult(data);
+    await loadDashboard();
+    showMsgBox('AI scan uploaded and analyzed successfully.');
+}
+
+// Full Calendar Logic
+let viewDate = new Date();
+let selectedDate = null;
+let selectedTime = null;
+
+function renderCalendar() {
+    const monthYear = document.getElementById('calMonthYear');
+    const grid = document.getElementById('calGrid');
+    grid.innerHTML = '';
+    const year = viewDate.getFullYear();
+    const month = viewDate.getMonth();
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    monthYear.textContent = `${monthNames[month]} ${year}`;
+    const days = ["S", "M", "T", "W", "T", "F", "S"];
+    days.forEach(d => {
+        const el = document.createElement('div');
+        el.className = 'cal-day-name';
+        el.textContent = d;
+        grid.appendChild(el);
+    });
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    for(let i=0; i<firstDay; i++) grid.appendChild(document.createElement('div'));
+    for(let d=1; d<=daysInMonth; d++) {
+        const el = document.createElement('div');
+        el.className = 'cal-day';
+        el.textContent = d;
+        const dateStr = new Date(year, month, d).toDateString();
+        if(dateStr === new Date().toDateString()) el.classList.add('today');
+        if(selectedDate === dateStr) el.classList.add('selected');
+        el.onclick = () => { selectedDate = dateStr; renderCalendar(); renderTimes(); };
+        grid.appendChild(el);
+    }
+}
+
+function prevMonth() { viewDate.setMonth(viewDate.getMonth() - 1); renderCalendar(); }
+function nextMonth() { viewDate.setMonth(viewDate.getMonth() + 1); renderCalendar(); }
+
+function renderTimes() {
+    const div = document.getElementById('bookingTimes');
+    div.innerHTML = '';
+    for(let h=9; h<=17; h++) {
+        const t = `${h}:00`;
+        const el = document.createElement('div');
+        el.className = 'time-slot';
+        if(selectedTime === t) el.classList.add('selected');
+        el.textContent = t;
+        el.onclick = () => { selectedTime = t; renderTimes(); };
+        div.appendChild(el);
+    }
+}
+
+function openBooking(idx) {
+    currentDoc = idx;
+    viewDate = new Date();
+    selectedDate = null;
+    selectedTime = null;
+    renderCalendar();
+    renderTimes();
+    document.getElementById('bookingModal').classList.add('active');
+}
+
+async function confirmBooking() {
+    if(!selectedDate || !selectedTime) { alert("Please select date and time"); return; }
+    const doctor = doctors[currentDoc];
+    // POST /api/patient/appointments/
+    const body = {
+        doctor_id: doctor ? doctor.id : currentDoc,
+        date: new Date(selectedDate).toISOString().slice(0, 10),
+        time: selectedTime
+    };
+    const data = await apiCall('POST', '/api/patient/appointments/', body);
+    if (data !== null) {
+        showMsgBox(t('booking-confirmed'));
+        document.getElementById('bookingModal').classList.remove('active');
+        await loadAppointments();
+        updateDash();
+    } else {
+        alert('Booking failed. Please try again.');
+    }
+}
+
+function showApps() {
+    const list = document.getElementById('appointmentsList');
+    if(apps.length === 0) { list.innerHTML = `<div class="empty"><i class="fa-solid fa-calendar-xmark empty-icon"></i><br>${t('no-appointments')}</div>`; return; }
+    list.innerHTML = apps.map(a => `<div class="item"><div class="item-info"><div class="item-icon"><i class="fa-solid fa-calendar-check"></i></div><div class="item-details"><h4>${a.doc}</h4><p>${a.date}${a.time ? ' @ ' + a.time : ''}</p></div></div></div>`).join('');
+}
+
+// Chat Logic
+async function sendAdminMsg() {
+    const input = document.getElementById('adminChatInput');
+    const msg = input.value.trim();
+    if(!msg) return;
+    adminChat.push({ text: msg, sent: true });
+    renderAdminChat();
+    input.value = '';
+    // POST /api/patient/support-chats/{id}/messages/
+    if (activeSupportChatId) {
+        await apiCall('POST', '/api/patient/support-chats/' + activeSupportChatId + '/messages/', { message: msg });
+    } else {
+        // إنشاء محادثة جديدة لو ما في محادثة مفتوحة
+        const data = await apiCall('POST', '/api/patient/support-chats/', { message: msg });
+        if (data) activeSupportChatId = data.id;
+    }
+}
+
+function renderAdminChat() {
+    const box = document.getElementById('adminChatBox');
+    box.innerHTML = adminChat.map(m => `<div class="msg ${m.sent?'sent':'received'}"><div class="bubble">${m.text}</div></div>`).join('');
+    box.scrollTop = box.scrollHeight;
+}
+
+function openDoctorChat(idx) {
+    currentDoc = idx;
+    const doctor = doctors[idx];
+    document.getElementById('doctorChatTitle').textContent = lang==='ar' ? doctor.ar : doctor.en;
+    document.getElementById('doctorChatModal').classList.add('active');
+    if (doctor && doctor.id) {
+        loadDoctorChatHistory(doctor.id);
+    } else {
+        renderDoctorChat();
+    }
+}
+
+async function sendDoctorMsg() {
+    const input = document.getElementById('doctorChatInput');
+    const msg = input.value.trim();
+
+    if (!msg) return;
+
+    const doctor = doctors[currentDoc];
+
+    if (!doctor || !doctor.id) {
+        showMsgBox('Doctor ID not found.');
+        return;
+    }
+
+    if (!activeDoctorChatId) {
+        const chatData = await apiCall('POST', '/api/patient/chats/', {
+            doctor_id: doctor.id
+        });
+
+        if (!chatData || !chatData.chat) {
+            showMsgBox('Could not open doctor chat.');
+            return;
+        }
+
+        activeDoctorChatId = chatData.chat.chat_id;
+    }
+
+    const data = await apiCall(
+        'POST',
+        '/api/patient/chats/' + activeDoctorChatId + '/messages/',
+        {
+            text_content: msg
+        }
+    );
+
+    if (!data) {
+        showMsgBox('Message was not sent.');
+        return;
+    }
+
+    if (!docChats[currentDoc]) docChats[currentDoc] = [];
+
+    docChats[currentDoc].push({
+        text: msg,
+        sent: true
+    });
+
+    input.value = '';
+    renderDoctorChat();
+    showMsgs();
+}
+
+function renderDoctorChat() {
+    const box = document.getElementById('doctorChatBox');
+    const msgs = docChats[currentDoc] || [];
+    box.innerHTML = msgs.map(m => `<div class="msg ${m.sent?'sent':'received'}"><div class="bubble">${m.text}</div></div>`).join('');
+    box.scrollTop = box.scrollHeight;
+}
+
+function showMsgs() {
+    const list = document.getElementById('messagesList');
+    let html = '';
+    if(adminChat.length > 0) html += `<div class="item" onclick="switchTab('admin')"><div class="item-info"><div class="item-icon"><i class="fa-solid fa-user-shield"></i></div><div class="item-details"><h4>${t('admin-chat')}</h4><p>${adminChat[adminChat.length-1].text}</p></div></div></div>`;
+    Object.keys(docChats).forEach(idx => {
+        const msgs = docChats[idx];
+        const doc = doctors[idx];
+        if(msgs && msgs.length > 0 && doc) html += `<div class="item" onclick="openDoctorChat(${idx})"><div class="item-info"><div class="item-icon"><i class="fa-solid fa-user-doctor"></i></div><div class="item-details"><h4>${lang==='ar'?doc.ar:doc.en}</h4><p>${msgs[msgs.length-1].text}</p></div></div></div>`;
+    });
+    list.innerHTML = html || `<div class="empty"><i class="fa-solid fa-comment-slash empty-icon"></i><br>${t('no-messages')}</div>`;
+}
+
+// Eye Movement Logic
+let eyeAngle = 0;
+setInterval(() => {
+    eyeAngle += 0.1;
+    const x = Math.cos(eyeAngle) * 5;
+    const y = Math.sin(eyeAngle) * 5;
+    const pLeft = document.querySelector('.pupil-left-corner');
+    const pRight = document.querySelector('.pupil-right-corner');
+    if(pLeft) { pLeft.setAttribute('cx', 35 + x); pLeft.setAttribute('cy', 60 + y); }
+    if(pRight) { pRight.setAttribute('cx', 85 + x); pRight.setAttribute('cy', 60 + y); }
+}, 50); 
+
+// Blinking effect for corner eyes
+setInterval(() => {
+    const iris = document.querySelectorAll('.pupil-left-corner, .pupil-right-corner');
+    iris.forEach(i => i.setAttribute('r', 0));
+    setTimeout(() => iris.forEach(i => i.setAttribute('r', 10)), 200);
+}, 20000);
+
+function closeDoctorChat() { document.getElementById('doctorChatModal').classList.remove('active'); }
+function fillProvinces() { document.getElementById('inputProvince').innerHTML = `<option value="">${t('select-province-opt')}</option>` + provinces.map(p => `<option value="${p.en}">${lang==='ar'?p.ar:p.en}</option>`).join(''); }
+function fillGenders() { document.getElementById('inputGender').innerHTML = `<option value="">${t('select-gender-opt')}</option><option value="${t('male')}">${t('male')}</option><option value="${t('female')}">${t('female')}</option>`; }
+function goToApp(tab) { document.getElementById('homePage').classList.remove('active'); document.getElementById('appPage').classList.add('active'); switchTab(tab); }
+function goHome() { document.getElementById('appPage').classList.remove('active'); document.getElementById('homePage').classList.add('active'); }
+
+
+document.getElementById('theme-btn').onclick = toggleTheme;
+document.getElementById('themeBtn').onclick = toggleTheme;
+document.getElementById('lang-btn').onclick = toggleLang;
+document.getElementById('langBtn').onclick = toggleLang;
+document.getElementById('inputBirthDate').onchange = calcAge;
+
+if(isDark) document.body.classList.add('dark-mode');
+document.getElementById('html-root').lang = lang;
+document.getElementById('html-root').dir = lang==='ar'?'rtl':'ltr';
+
+fillProvinces(); fillGenders(); updateText(); updateGreeting(); updateDash(); renderAdminChat();
+if (ACCESS_TOKEN) loadPatientProfile();
+</script>
+</body>
+</html>

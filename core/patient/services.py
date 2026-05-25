@@ -16,6 +16,8 @@ from core.models import (
 )
 from django.db import transaction
 
+from core.encryption import encrypt_message_text, decrypt_message_text
+
 from django.utils import timezone
 
 from django.db.models import Avg
@@ -300,7 +302,7 @@ def get_chat_messages(user, chat_id):
             "sender_name": message.sender_user.full_name,
             "sender_role": message.sender_user.role,
             "message_type": message.message_type,
-            "text_content": message.text_content,
+            "text_content": decrypt_message_text(message.text_content),
             "image_path": message.image_path,
             "created_at": message.created_at,
         })
@@ -327,7 +329,7 @@ def send_patient_chat_message(user, chat_id, data):
         chat=chat,
         sender_user=user,
         message_type="text",
-        text_content=data["text_content"]
+        text_content=encrypt_message_text(data["text_content"])
     )
 
     return {
@@ -337,7 +339,7 @@ def send_patient_chat_message(user, chat_id, data):
         "sender_name": user.full_name,
         "sender_role": user.role,
         "message_type": message.message_type,
-        "text_content": message.text_content,
+        "text_content": decrypt_message_text(message.text_content),
         "image_path": message.image_path,
         "created_at": message.created_at,
     }
@@ -454,7 +456,7 @@ def get_support_chat_messages(user, chat_id):
             "sender_name": message.sender_user.full_name,
             "sender_role": message.sender_user.role,
             "message_type": message.message_type,
-            "text_content": message.text_content,
+            "text_content": decrypt_message_text(message.text_content),
             "image_path": message.image_path,
             "created_at": message.created_at,
         })
@@ -489,7 +491,7 @@ def send_patient_support_message(user, chat_id, data):
         chat=chat,
         sender_user=user,
         message_type="text",
-        text_content=data["text_content"]
+        text_content=encrypt_message_text(data["text_content"])
     )
 
     return {
@@ -499,7 +501,7 @@ def send_patient_support_message(user, chat_id, data):
         "sender_name": user.full_name,
         "sender_role": user.role,
         "message_type": message.message_type,
-        "text_content": message.text_content,
+        "text_content": decrypt_message_text(message.text_content),
         "image_path": message.image_path,
         "created_at": message.created_at,
     }

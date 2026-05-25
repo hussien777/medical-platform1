@@ -6,6 +6,9 @@ from core.models import Doctor, User, Appointment, Chat, Message, SupportRequest
 
 from django.utils import timezone
 
+from core.encryption import encrypt_message_text, decrypt_message_text
+
+
 def model_has_field(model_instance, field_name):
     return any(field.name == field_name for field in model_instance._meta.fields)
 
@@ -318,8 +321,7 @@ def get_doctor_chat_messages(user, chat_id):
             "sender_name": message.sender_user.full_name,
             "sender_role": message.sender_user.role,
             "message_type": message.message_type,
-            "text_content": message.text_content,
-            "image_path": message.image_path,
+            "text_content": decrypt_message_text(message.text_content),            "image_path": message.image_path,
             "created_at": message.created_at,
         })
 
@@ -346,7 +348,7 @@ def send_doctor_chat_message(user, chat_id, data):
         chat=chat,
         sender_user=user,
         message_type="text",
-        text_content=data["text_content"]
+        text_content=encrypt_message_text(data["text_content"])
     )
 
     return {
@@ -356,7 +358,7 @@ def send_doctor_chat_message(user, chat_id, data):
         "sender_name": user.full_name,
         "sender_role": user.role,
         "message_type": message.message_type,
-        "text_content": message.text_content,
+        "text_content": decrypt_message_text(message.text_content),
         "image_path": message.image_path,
         "created_at": message.created_at,
     }
@@ -473,7 +475,7 @@ def get_doctor_support_chat_messages(user, chat_id):
             "sender_name": message.sender_user.full_name,
             "sender_role": message.sender_user.role,
             "message_type": message.message_type,
-            "text_content": message.text_content,
+            "text_content": decrypt_message_text(message.text_content),
             "image_path": message.image_path,
             "created_at": message.created_at,
         })
@@ -508,7 +510,7 @@ def send_doctor_support_message(user, chat_id, data):
         chat=chat,
         sender_user=user,
         message_type="text",
-        text_content=data["text_content"]
+        text_content=encrypt_message_text(data["text_content"])
     )
 
     return {
@@ -518,7 +520,7 @@ def send_doctor_support_message(user, chat_id, data):
         "sender_name": user.full_name,
         "sender_role": user.role,
         "message_type": message.message_type,
-        "text_content": message.text_content,
+        "text_content": decrypt_message_text(message.text_content),
         "image_path": message.image_path,
         "created_at": message.created_at,
     }

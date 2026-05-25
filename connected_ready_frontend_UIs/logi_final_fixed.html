@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="app-html">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Eye Care - Login</title>
+    <style>
+        :root {
+            --teal-600: #0d9488;
+            --teal-500: #14b8a6;
+            --teal-400: #2dd4bf;
+            --text-main: #2c3e50;
+            --text-light: #6b7280;
+        }
+
+        body.dark-mode {
+            --teal-600: #2dd4bf;
+            --teal-500: #5eead4;
+            --text-main: #f0f0f0;
+            --text-light: #d1d5db;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, rgba(0, 128, 128, 0.1) 0%, rgba(77, 182, 172, 0.05) 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, rgba(0, 128, 128, 0.2) 0%, rgba(77, 182, 172, 0.1) 100%),
+                linear-gradient(180deg, #0f172a 0%, #1a1f2e 100%);
+            background-attachment: fixed;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        [dir="rtl"] nav {
+            flex-direction: row-reverse;
+        }
+
+        @media (min-width: 768px) {
+            nav {
+                padding: 2rem 3rem;
+            }
+        }
+
+        .nav-left,
+        .nav-right {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        [dir="rtl"] .nav-left,
+        [dir="rtl"] .nav-right {
+            flex-direction: row-reverse;
+        }
+
+        .btn-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: var(--text-main);
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        [dir="rtl"] .btn-nav {
+            flex-direction: row-reverse;
+        }
+
+        .btn-nav:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .btn-signup {
+            background: linear-gradient(to right, var(--teal-600), var(--teal-500));
+            color: white;
+            border: none;
+        }
+
+        .btn-signup:hover {
+            background: linear-gradient(to right, #0d7377, #14a399);
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        .login-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 2rem;
+            padding: 3rem 2rem;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        .logo-box {
+            margin-bottom: 2rem;
+        }
+
+        .logo-svg {
+            width: 100px;
+            height: 100px;
+            filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.1));
+        }
+
+        .login-header h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, var(--teal-600), var(--teal-400));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .login-header p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
+
+        .user-selector {
+            display: flex;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            padding: 0.5rem;
+            gap: 0.5rem;
+        }
+
+        body.dark-mode .user-selector {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .user-btn {
+            flex: 1;
+            border: none;
+            background: none;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .user-btn.active {
+            background: var(--teal-600);
+            color: white;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        [dir="rtl"] .form-group {
+            text-align: right;
+        }
+
+        label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--teal-600);
+        }
+
+        .input-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.875rem;
+            border-radius: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.6);
+            color: var(--text-main);
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        [dir="ltr"] input {
+            padding-right: 2.5rem;
+        }
+
+        [dir="rtl"] input {
+            padding-left: 2.5rem;
+        }
+
+        body.dark-mode input {
+            background: rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        input:focus {
+            border-color: var(--teal-600);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .eye-icon {
+            position: absolute;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+            padding: 0.25rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        [dir="ltr"] .eye-icon {
+            right: 0.75rem;
+        }
+
+        [dir="rtl"] .eye-icon {
+            left: 0.75rem;
+        }
+
+        .error {
+            color: #dc2626;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        /* ملاحظة التكرار تحت الحقل */
+        .duplicate-note {
+            color: #dc2626;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            display: none;
+            font-weight: 500;
+        }
+
+        .duplicate-note.show {
+            display: block;
+        }
+
+        /* شروط كلمة المرور */
+        .pass-check {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            display: none;
+            text-align: left;
+        }
+
+        .pass-check.show {
+            display: block;
+        }
+
+        [dir="rtl"] .pass-check {
+            text-align: right;
+        }
+
+        body.dark-mode .pass-check {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        [dir="rtl"] .check-item {
+            flex-direction: row-reverse;
+        }
+
+        .check-icon {
+            width: 1.2rem;
+            height: 1.2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            background: #e5e7eb;
+            color: #6b7280;
+            flex-shrink: 0;
+        }
+
+        .check-icon.ok {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(to right, var(--teal-600), var(--teal-500));
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(13, 148, 136, 0.3);
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-login:hover {
+            background: linear-gradient(to right, #0d7377, #14a399);
+            box-shadow: 0 12px 28px rgba(13, 148, 136, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .footer {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            font-size: 0.875rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        [dir="rtl"] .footer {
+            flex-direction: row-reverse;
+        }
+
+        .footer a {
+            color: var(--teal-600);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .icon-svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            fill: none;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="nav-left">
+            <button class="btn-nav" id="theme-btn">
+                <span id="theme-icon-box">
+                    <svg id="icon-moon" class="icon-svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                    </svg>
+                    <svg id="icon-sun" class="icon-svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" style="display:none">
+                        <circle cx="12" cy="12" r="5" />
+                        <line x1="12" y1="1" x2="12" y2="3" />
+                        <line x1="12" y1="21" x2="12" y2="23" />
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                        <line x1="1" y1="12" x2="3" y2="12" />
+                        <line x1="21" y1="12" x2="23" y2="12" />
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                    </svg>
+                </span>
+                <span id="theme-text">Dark</span>
+            </button>
+            <button class="btn-nav" id="lang-btn">
+                <span>
+                    <svg class="icon-svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="2" y1="12" x2="22" y2="12" />
+                        <path
+                            d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                    </svg>
+                </span>
+                <span id="lang-text">العربية</span>
+            </button>
+        </div>
+        <div class="nav-right">
+            <a href="regist.html" class="btn-nav btn-signup" id="signup-link">Sign Up</a>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="login-box">
+            <div class="logo-box">
+                <svg class="logo-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                    <g class="eye-group">
+                        <circle cx="35" cy="60" r="28" fill="none" stroke="currentColor" stroke-width="2"
+                            style="color: var(--teal-600)" />
+                        <circle cx="35" cy="60" r="18" fill="currentColor" style="color: var(--teal-500)"
+                            class="iris-left" />
+                        <circle cx="35" cy="60" r="10" fill="white" class="pupil-left" />
+                        <circle cx="32" cy="56" r="3" fill="white" opacity="0.8" />
+                    </g>
+                    <g class="eye-group">
+                        <circle cx="85" cy="60" r="28" fill="none" stroke="currentColor" stroke-width="2"
+                            style="color: var(--teal-600)" />
+                        <circle cx="85" cy="60" r="18" fill="currentColor" style="color: var(--teal-500)"
+                            class="iris-right" />
+                        <circle cx="85" cy="60" r="10" fill="white" class="pupil-right" />
+                        <circle cx="82" cy="56" r="3" fill="white" opacity="0.8" />
+                    </g>
+                    <path d="M 20 40 Q 35 30 50 40" stroke="currentColor" stroke-width="2" fill="none"
+                        style="color: var(--teal-400)" class="brow-left" />
+                    <path d="M 70 40 Q 85 30 100 40" stroke="currentColor" stroke-width="2" fill="none"
+                        style="color: var(--teal-400)" class="brow-right" />
+                </svg>
+            </div>
+
+            <div class="login-header">
+                <h1 id="title">Welcome Back</h1>
+                <p id="subtitle">Sign in to continue</p>
+            </div>
+
+            <div class="user-selector">
+                <button class="user-btn active" id="btn-patient" onclick="selectUser('patient', this)">
+                    <span id="patient-text">Patient</span>
+                </button>
+                <button class="user-btn" id="btn-doctor" onclick="selectUser('doctor', this)">
+                    <span id="doctor-text">Doctor</span>
+                </button>
+                <button class="user-btn" id="btn-admin" onclick="selectUser('admin', this)">
+                    <span id="admin-text">Admin</span>
+                </button>
+            </div>
+
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label id="label-user">Email Address</label>
+                    <input type="text" id="user-input" placeholder="example@gmail.com">
+                    <span class="error" id="user-error"></span>
+                    <!-- ملاحظة التكرار تحت الحقل مباشرة -->
+                    <span id="duplicate-note" class="duplicate-note"></span>
+                </div>
+
+                <div class="form-group">
+                    <label id="label-pass">Password</label>
+                    <div class="input-box">
+                        <input type="password" id="pass-input" placeholder="Enter your password">
+                        <button type="button" class="eye-icon" id="eye-icon" onclick="togglePassView()">
+                            <i class="fas fa-eye" id="eye-icon-inner"></i>
+                        </button>
+                    </div>
+                    <span class="error" id="pass-error"></span>
+                </div>
+
+                <div class="pass-check" id="pass-check">
+                    <div class="check-item">
+                        <div class="check-icon" id="check-upper">✓</div>
+                        <span id="check-upper-text">Uppercase letter</span>
+                    </div>
+                    <div class="check-item">
+                        <div class="check-icon" id="check-special">✓</div>
+                        <span id="check-special-text">Special character</span>
+                    </div>
+                    <div class="check-item">
+                        <div class="check-icon" id="check-number">✓</div>
+                        <span id="check-number-text">Number</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-login" id="btn-login">Login</button>
+            </form>
+
+            <div class="footer">
+                <a href="forget.html" id="forgot-link">Forgot Password?</a>
+                <a href="about.html" id="about-link">About Us</a>
+                <a href="suup.html" id="support-link">Support</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const html = document.getElementById('app-html');
+        const body = document.body;
+        const themeBtn = document.getElementById('theme-btn');
+        const moonIcon = document.getElementById('icon-moon');
+        const sunIcon = document.getElementById('icon-sun');
+        const themeText = document.getElementById('theme-text');
+        const langBtn = document.getElementById('lang-btn');
+        const userInput = document.getElementById('user-input');
+        const passInput = document.getElementById('pass-input');
+        const passCheck = document.getElementById('pass-check');
+        const duplicateNote = document.getElementById('duplicate-note');
+
+        let lang = 'en';
+        let dark = localStorage.getItem('theme') === 'dark';
+        let userType = 'patient';
+
+        const userData = {
+            patient: { user: '', pass: '' },
+            doctor: { user: '', pass: '' },
+            admin: { user: '', pass: '' }
+        };
+
+
+
+        const strings = {
+            en: {
+                title: 'Welcome Back',
+                subtitle: 'Sign in to continue',
+                patient: 'Patient',
+                doctor: 'Doctor',
+                admin: 'Admin',
+                email: 'Email Address',
+                username: 'Username',
+                pass: 'Password',
+                login: 'Login',
+                about: 'About Us',
+                support: 'Support',
+                forgot: 'Forgot Password?',
+                langBtn: 'العربية',
+                dark: 'Dark',
+                light: 'Light',
+                signup: 'Sign Up',
+                required: 'This field is required',
+                badEmail: 'Please enter a valid email',
+                badUsername: 'Username must be at least 6 characters',
+                badPass: 'Password must contain uppercase, number, and special character',
+                shortPass: 'Password must be at least 8 characters',
+                upper: 'Uppercase letter (A-Z)',
+                special: 'Special character (!@#$%^&*)',
+                number: 'Number (0-9)',
+                emailUsed: '* This email is already used by another person',
+                userUsed: '* This username is already used by another person',
+                passPlaceholder: 'Enter your password'
+            },
+            ar: {
+                title: 'أهلاً بك مجدداً',
+                subtitle: 'سجل دخولك للمتابعة',
+                patient: 'مريض',
+                doctor: 'طبيب',
+                admin: 'مسؤول',
+                email: 'البريد الإلكتروني',
+                username: 'اسم المستخدم',
+                pass: 'كلمة المرور',
+                login: 'دخول',
+                about: 'من نحن',
+                support: 'الدعم والمساعدة',
+                forgot: 'نسيت كلمة المرور؟',
+                langBtn: 'English',
+                dark: 'الوضع الداكن',
+                light: 'الوضع الفاتح',
+                signup: 'إنشاء حساب',
+                required: 'هذا الحقل مطلوب',
+                badEmail: 'أدخل بريد إلكتروني صحيح',
+                badUsername: 'اسم المستخدم يجب أن يكون 6 أحرف على الأقل',
+                badPass: 'كلمة المرور يجب أن تحتوي على حرف كبير ورقم ورمز خاص',
+                shortPass: 'كلمة المرور يجب أن تكون 8 خانات على الأقل',
+                upper: 'حرف كبير (A-Z)',
+                special: 'رمز خاص (!@#$%^&*)',
+                number: 'رقم (0-9)',
+                emailUsed: '* هذا البريد الإلكتروني مستخدم من قبل شخص آخر',
+                userUsed: '* اسم المستخدم هذا مستخدم من قبل شخص آخر',
+                passPlaceholder: 'أدخل كلمة المرور'
+            }
+        };
+        function updateText() {
+            const t = strings[lang];
+            document.getElementById('title').textContent = t.title;
+            document.getElementById('subtitle').textContent = t.subtitle;
+            document.getElementById('patient-text').textContent = t.patient;
+            document.getElementById('doctor-text').textContent = t.doctor;
+            document.getElementById('admin-text').textContent = t.admin;
+            document.getElementById('label-pass').textContent = t.pass;
+            document.getElementById('btn-login').textContent = t.login;
+            document.getElementById('about-link').textContent = t.about;
+            document.getElementById('support-link').textContent = t.support;
+            if (document.getElementById('forgot-link')) document.getElementById('forgot-link').textContent = t.forgot;
+            document.getElementById('lang-text').textContent = t.langBtn;
+            document.getElementById('signup-link').textContent = t.signup;
+            document.getElementById('check-upper-text').textContent = t.upper;
+            document.getElementById('check-special-text').textContent = t.special;
+            document.getElementById('check-number-text').textContent = t.number;
+            passInput.placeholder = t.passPlaceholder;
+
+            if (userType === 'admin') {
+                document.getElementById('label-user').textContent = t.username;
+                userInput.placeholder = 'john_doe';
+            } else {
+                document.getElementById('label-user').textContent = t.email;
+                userInput.placeholder = 'example@gmail.com';
+            }
+
+            // تحديث نص الملاحظة فوراً عند تغيير اللغة
+            if (duplicateNote.classList.contains('show')) {
+                duplicateNote.textContent = userType === 'admin' ? t.userUsed : t.emailUsed;
+            }
+
+            themeText.textContent = dark ? t.light : t.dark;
+            html.setAttribute('lang', lang);
+            html.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+        }
+
+        function selectUser(type, btn) {
+            userData[userType].user = userInput.value;
+            userData[userType].pass = passInput.value;
+
+            userType = type;
+            document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            userInput.value = userData[userType].user;
+            passInput.value = userData[userType].pass;
+
+            document.getElementById('user-error').classList.remove('show');
+            document.getElementById('pass-error').classList.remove('show');
+            duplicateNote.classList.remove('show');
+            passCheck.classList.remove('show');
+
+            checkPass();
+            updateText();
+        }
+
+        function togglePassView() {
+            const icon = document.getElementById('eye-icon-inner');
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        passInput.onfocus = () => passCheck.classList.add('show');
+
+        function checkPass() {
+            const p = passInput.value;
+            document.getElementById('check-upper').classList.toggle('ok', /[A-Z]/.test(p));
+            document.getElementById('check-special').classList.toggle('ok', /[!@#$%^&*]/.test(p));
+            document.getElementById('check-number').classList.toggle('ok', /[0-9]/.test(p));
+        }
+
+        function checkDuplicate() {
+            const val = userInput.value.trim();
+            const t = strings[lang];
+            if (val && usedEmails.includes(val)) {
+                duplicateNote.textContent = userType === 'admin' ? t.userUsed : t.emailUsed;
+                duplicateNote.classList.add('show');
+                return true;
+            }
+            duplicateNote.classList.remove('show');
+            return false;
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+
+            const email = userInput.value.trim();
+            const password = passInput.value;
+
+            if (!email || !password) {
+                const msg = lang === 'en'
+                    ? 'Please enter email and password.'
+                    : 'يرجى إدخال البريد الإلكتروني وكلمة المرور.';
+                alert(msg);
+                return;
+            }
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/token/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    const msg = lang === 'en'
+                        ? 'Login failed: ' + (data.detail || 'Invalid credentials')
+                        : 'فشل تسجيل الدخول: ' + (data.detail || 'بيانات غير صحيحة');
+                    alert(msg);
+                    return;
+                }
+
+                // Check that selected login type matches real backend role
+                if (data.role !== userType) {
+                    sessionStorage.clear();
+
+                    const msg = lang === 'en'
+                        ? `This account is registered as ${data.role}, not ${userType}. Please choose the correct login type.`
+                        : `هذا الحساب مسجل كـ ${data.role} وليس ${userType}. يرجى اختيار نوع الحساب الصحيح.`;
+
+                    alert(msg);
+                    return;
+                }
+
+                localStorage.setItem('access_token', data.access);
+                localStorage.setItem('refresh_token', data.refresh);
+                localStorage.setItem('user_id', data.user_id);
+                localStorage.setItem('eyecare_user', data.email);
+                localStorage.setItem('eyecare_role', data.role);
+                const redirectMap = {
+                    patient: 'patien.html',
+                    doctor: 'doctor.html',
+                    admin: 'adm.html'
+                };
+
+                const realRole = data.role;
+
+                if (!redirectMap[realRole]) {
+                    alert('Unknown user role: ' + realRole);
+                    return;
+                }
+
+                const msg = lang === 'en'
+                    ? 'Login successful! Redirecting...'
+                    : 'تم تسجيل الدخول! جاري التحويل...';
+
+                alert(msg);
+                window.location.href = redirectMap[realRole];
+
+            } catch (error) {
+                console.error('Error during login:', error);
+                const msg = lang === 'en'
+                    ? 'Connection error. Please try again later.'
+                    : 'خطأ في الاتصال. يرجى المحاولة لاحقاً.';
+                alert(msg);
+            }
+        }
+
+        userInput.oninput = checkDuplicate;
+
+        themeBtn.onclick = () => {
+            dark = !dark;
+            body.classList.toggle('dark-mode', dark);
+            moonIcon.style.display = dark ? 'none' : 'block';
+            sunIcon.style.display = dark ? 'block' : 'none';
+            localStorage.setItem('theme', dark ? 'dark' : 'light');
+            updateText();
+        };
+
+        langBtn.onclick = () => {
+            lang = lang === 'en' ? 'ar' : 'en';
+            updateText();
+        };
+
+        passInput.oninput = checkPass;
+
+        const pupils = [
+            { pupil: document.querySelector('.pupil-left'), x: 35, y: 60 },
+            { pupil: document.querySelector('.pupil-right'), x: 85, y: 60 }
+        ];
+        let angle = 0;
+        setInterval(() => {
+            angle += 0.05;
+            pupils.forEach(p => {
+                p.pupil.setAttribute('cx', p.x + Math.cos(angle) * 8);
+                p.pupil.setAttribute('cy', p.y + Math.sin(angle) * 8);
+            });
+        }, 50);
+
+        if (dark) {
+            body.classList.add('dark-mode');
+            moonIcon.style.display = 'none';
+            sunIcon.style.display = 'block';
+        }
+        updateText();
+    </script>
+</body>
+
+</html>

@@ -8,6 +8,8 @@ from .views import (
     DoctorOTPVerifyView,
     PatientDashboardView,
     DoctorDashboardView,
+    PasswordResetRequestView, 
+    PasswordResetConfirmView,
 )
 
 urlpatterns = [
@@ -23,4 +25,7 @@ urlpatterns = [
     path("patient/", include("core.patient.urls")),
     path("doctor/", include("core.doctor.urls")),
     path("admin/", include("core.admin_panel.urls")),
+    path("password-reset/request/", PasswordResetRequestView.as_view(), name="password-reset-request"),
+    path("password-reset/confirm/", PasswordResetConfirmView.as_view(), name="password-reset-confirm"),
+
 ]

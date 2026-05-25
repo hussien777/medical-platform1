@@ -1,11 +1,12 @@
 from datetime import timedelta
 import random
+from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
 from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
 from rest_framework.exceptions import ValidationError
-from core.models import User, VerificationCode, Doctor, Patient
+from core.models import User, VerificationCode, Doctor, Patient, PasswordReset
 
 
 #Expiration time for OTP code 
@@ -306,3 +307,78 @@ def verify_doctor_otp(data):
     otp_record.save(update_fields=["is_used"])
 
     return user
+
+
+
+# =========================
+# PASSWORD RESET REQUEST
+# =========================
+def request_password_reset(data):
+    email = data["email"]
+
+    user = User.objects.filter(email=email).first()
+
+    if not user:
+        raise ValidationError("No account found with this email address")
+
+    PasswordReset.objects.filter(
+        user=user,
+        is_used=False
+    ).update(is_used=True)
+
+    reset_code = str(random.randint(100000, 999999))
+
+    PasswordReset.objects.create(
+        user=user,
+        reset_code=reset_code,
+        expires_at=timezone.now() + timedelta(minutes=10),
+        is_used=False
+    )
+
+    send_mail(
+        subject="Eye Care Password Reset Code",
+        message=f"Your password reset code is: {reset_code}\nThis code will expire in 10 minutes.",
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[user.email],
+        fail_silently=False,
+    )
+
+    return {
+        "message": "Password reset code sent successfully."
+    }
+
+
+# =========================
+# PASSWORD RESET CONFIRM
+# =========================
+def confirm_password_reset(data):
+    email = data["email"]
+    otp_code = data["otp_code"]
+    new_password = data["new_password"]
+
+    user = User.objects.filter(email=email).first()
+
+    if not user:
+        raise ValidationError("No account found with this email address")
+
+    reset_record = PasswordReset.objects.filter(
+        user=user,
+        reset_code=otp_code,
+        is_used=False
+    ).order_by("-created_at").first()
+
+    if not reset_record:
+        raise ValidationError("Invalid reset code")
+
+    if is_expired(reset_record.expires_at):
+        raise ValidationError("Reset code expired")
+
+    user.password_hash = make_password(new_password)
+    user.save(update_fields=["password_hash"])
+
+    reset_record.is_used = True
+    reset_record.save(update_fields=["is_used"])
+
+    return {
+        "message": "Password reset successfully."
+    }

@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.db.models.deletion import ProtectedError
 from django.db.utils import IntegrityError
 from django.utils import timezone
-
+from core.encryption import encrypt_message_text, decrypt_message_text
 from rest_framework.exceptions import ValidationError
 
 from core.models import User, Patient, Doctor, Admin, Chat, Message, SupportRequest
@@ -330,7 +330,7 @@ def get_admin_support_chat_messages(user, chat_id):
             "sender_name": message.sender_user.full_name,
             "sender_role": message.sender_user.role,
             "message_type": message.message_type,
-            "text_content": message.text_content,
+            "text_content": decrypt_message_text(message.text_content),
             "image_path": message.image_path,
             "created_at": message.created_at,
         })
@@ -356,9 +356,8 @@ def send_admin_support_message(user, chat_id, data):
         chat=chat,
         sender_user=user,
         message_type="text",
-        text_content=data["text_content"]
+        text_content=encrypt_message_text(data["text_content"])
     )
-
     return {
         "message_id": message.message_id,
         "chat_id": chat.chat_id,
@@ -366,7 +365,7 @@ def send_admin_support_message(user, chat_id, data):
         "sender_name": user.full_name,
         "sender_role": user.role,
         "message_type": message.message_type,
-        "text_content": message.text_content,
+        "text_content": decrypt_message_text(message.text_content),
         "image_path": message.image_path,
         "created_at": message.created_at,
     }

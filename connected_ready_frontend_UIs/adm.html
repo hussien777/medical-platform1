@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin System - MediVision</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        :root { --primary:#06B6D4; --secondary:#0EA5E9; --bg:#f8fafc; --card:#fff; --text:#1e293b; --border:#e2e8f0; }
+        body.dark-mode { --bg:#0f172a; --card:#1e293b; --text:#f1f5f9; --border:#334155; }
+        body { font-family:'Cairo', sans-serif; background:var(--bg); color:var(--text); transition:0.3s; }
+        header { background:linear-gradient(135deg,var(--primary),var(--secondary)); color:#fff; padding:12px 25px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:1000; }
+        .header-left { display:flex; flex-direction:column; }
+        .header-right { display:flex; gap:12px; align-items:center; }
+        .btn-theme,.btn-lang { border:none; background:rgba(255,255,255,.2); color:#fff; cursor:pointer; transition:.2s; }
+        .btn-theme { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+        .btn-lang { padding:6px 15px; border-radius:20px; font-family:inherit; }
+        .page { display:none; padding:20px; min-height:100vh; }
+        .page.active { display:block; }
+        #home-page { text-align:center; padding-top:30px; }
+        .home-top-bar { display:flex; justify-content:space-between; align-items:center; padding:0 20px; }
+        .main-logo-big { width:130px; margin:30px 0 20px; }
+        #h-title { color:var(--primary); margin-bottom:5px; font-size:2.2rem; }
+        #h-sub { color:var(--secondary); margin-bottom:20px; }
+        .home-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:20px; max-width:1000px; margin:30px auto; padding:0 20px; }
+        .home-card { background:var(--card); border:1px solid var(--border); padding:30px; border-radius:15px; cursor:pointer; transition:.2s; text-align:center; min-height:150px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+        .home-card:hover { transform:translateY(-5px); border-color:var(--primary); box-shadow:0 8px 20px rgba(6,182,212,.12); }
+        .home-card i { font-size:45px; display:block; margin-bottom:12px; color:var(--primary); }
+        .eye-logo { width:55px; height:55px; }
+        .card { background:var(--card); border:1px solid var(--border); border-radius:12px; margin-bottom:20px; overflow:hidden; }
+        .card-header { padding:15px 20px; background:rgba(6,182,212,.05); border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; gap:1rem; }
+        .card-body { padding:20px; }
+        .btn-back { background:var(--primary); color:#fff; border:none; padding:8px 16px; border-radius:8px; cursor:pointer; font-family:inherit; font-weight:600; }
+        .form-container { max-width:500px; margin:0 auto; }
+        .input-group { margin-bottom:20px; }
+        .input-group label { display:block; margin-bottom:6px; font-weight:bold; }
+        .input-group input { width:100%; padding:12px; border:1px solid var(--border); border-radius:10px; background:var(--bg); color:var(--text); font-family:inherit; }
+        .input-hint { font-size:.8rem; color:#64748b; margin-top:5px; display:block; }
+        .btn-save-all { width:100%; padding:14px; background:#22c55e; color:#fff; border:none; border-radius:10px; cursor:pointer; font-weight:bold; font-family:inherit; }
+        .admin-info-card { background:rgba(6,182,212,.1); border:1px solid var(--primary); border-radius:10px; padding:15px; margin-top:20px; text-align:start; }
+        .admin-info-card h4 { color:var(--primary); margin-bottom:5px; }
+        table { width:100%; border-collapse:collapse; margin-top:10px; }
+        th,td { padding:12px; border-bottom:1px solid var(--border); }
+        th { color:var(--primary); font-weight:700; }
+        html[dir="rtl"] th, html[dir="rtl"] td { text-align:right; }
+        html[dir="ltr"] th, html[dir="ltr"] td { text-align:left; }
+        .btn-action { padding:6px 12px; border:none; border-radius:6px; cursor:pointer; margin:3px; font-family:inherit; font-size:.85rem; font-weight:600; }
+        .btn-approve { background:#22c55e; color:#fff; }
+        .btn-reject { background:#ef4444; color:#fff; }
+        .messages-layout { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+        @media (max-width:800px) { .messages-layout { grid-template-columns:1fr; } }
+        .msg-box { height:450px; overflow-y:auto; border:1px solid var(--border); border-radius:12px; padding:10px; }
+        .msg-row { padding:12px; border-bottom:1px solid var(--border); cursor:pointer; display:flex; align-items:center; gap:12px; transition:.2s; }
+        .msg-row:hover { background:rgba(6,182,212,.08); border-radius:8px; }
+        .msg-row i { font-size:1.2rem; color:var(--primary); }
+        .chat-history { height:350px; overflow-y:auto; border:1px solid var(--border); padding:15px; margin-bottom:15px; border-radius:12px; background:var(--bg); }
+        .chat-controls { display:flex; gap:8px; }
+        .chat-controls input { flex:1; padding:12px; border:1px solid var(--border); border-radius:10px; background:var(--bg); color:var(--text); }
+        .chat-controls button { padding:10px 20px; background:var(--primary); color:#fff; border:none; border-radius:10px; cursor:pointer; font-weight:600; }
+        .chat-container { height:500px; display:flex; flex-direction:column; }
+        .chat-messages { flex:1; overflow-y:auto; border:1px solid var(--border); border-radius:12px; padding:15px; margin-bottom:15px; background:var(--bg); }
+        .msg-item { margin-bottom:12px; padding:10px; border-radius:8px; max-width:70%; }
+        .msg-item.user { background:var(--primary); color:#fff; margin-left:auto; }
+        .msg-item.admin { background:var(--border); }
+        .msg-input-area { display:flex; gap:8px; }
+        .msg-input-area input { flex:1; padding:12px; border:1px solid var(--border); border-radius:10px; background:var(--bg); color:var(--text); font-family:inherit; }
+        .msg-input-area button { padding:10px 20px; background:var(--primary); color:#fff; border:none; border-radius:10px; cursor:pointer; font-weight:600; }
+        .filter-container { margin:15px 0; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+        .sort-dropdown { position:relative; display:inline-block; }
+        .sort-btn { padding:10px 15px; background:var(--primary); color:#fff; border:none; border-radius:8px; cursor:pointer; font-family:inherit; display:flex; align-items:center; gap:8px; }
+        .dropdown-menu { display:none; position:absolute; background:var(--card); border:1px solid var(--border); border-radius:8px; min-width:180px; box-shadow:0 4px 12px rgba(0,0,0,.15); z-index:100; top:100%; }
+        html[dir="ltr"] .dropdown-menu { left:0; right:auto; }
+        html[dir="rtl"] .dropdown-menu { right:0; left:auto; }
+        .dropdown-menu.active { display:block; }
+        .dropdown-item { padding:12px 16px; cursor:pointer; border-bottom:1px solid var(--border); color:var(--text); transition:.2s; white-space:nowrap; }
+        .dropdown-item:last-child { border-bottom:none; }
+        .dropdown-item:hover { background:rgba(6,182,212,.1); }
+        .dropdown-item i { color:var(--primary); margin-inline-end:8px; }
+        .modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.5); z-index:3000; align-items:center; justify-content:center; }
+        .modal-overlay.active { display:flex; }
+        .modal-box { background:var(--card); padding:25px; border-radius:15px; width:90%; max-width:450px; text-align:center; }
+        .btn-close-modal { padding:8px 25px; background:var(--primary); color:#fff; border:none; border-radius:8px; cursor:pointer; margin-top:15px; }
+        .btn-confirm { background:#ef4444; color:#fff; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold; }
+        .btn-cancel { background:#64748b; color:#fff; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold; }
+    </style>
+</head>
+<body>
+<div id="home-page" class="page active">
+    <div class="home-top-bar">
+        <div class="corner-logo">
+            <svg class="eye-logo" viewBox="0 0 120 120">
+                <g><circle cx="35" cy="60" r="26" fill="none" stroke="#06B6D4" stroke-width="2.5"/><circle cx="35" cy="60" r="16" fill="#0EA5E9"/><circle class="pupil-animated" id="p-left" cx="35" cy="60" r="9" fill="white"/></g>
+                <g><circle cx="85" cy="60" r="26" fill="none" stroke="#06B6D4" stroke-width="2.5"/><circle cx="85" cy="60" r="16" fill="#0EA5E9"/><circle class="pupil-animated" id="p-right" cx="85" cy="60" r="9" fill="white"/></g>
+            </svg>
+        </div>
+        <div class="header-right">
+            <button class="btn-theme" style="color:var(--text); border:1px solid var(--border); background:var(--card);" onclick="toggleTheme()" id="home-theme-btn"><i class="fas fa-moon"></i></button>
+            <button class="btn-lang" style="color:var(--text); border:1px solid var(--border); background:var(--card);" onclick="toggleLang()" id="home-lang-btn">العربية</button>
+        </div>
+    </div>
+    <svg class="main-logo-big" viewBox="0 0 120 120">
+        <g><circle cx="35" cy="60" r="26" fill="none" stroke="#06B6D4" stroke-width="2.5"/><circle cx="35" cy="60" r="16" fill="#0EA5E9"/><circle cx="35" cy="60" r="9" fill="white"/></g>
+        <g><circle cx="85" cy="60" r="26" fill="none" stroke="#06B6D4" stroke-width="2.5"/><circle cx="85" cy="60" r="16" fill="#0EA5E9"/><circle cx="85" cy="60" r="9" fill="white"/></g>
+    </svg>
+    <h1 id="h-title">Admin System - MediVision</h1>
+    <p id="h-sub">Welcome, please choose a section</p>
+    <div class="home-grid" id="main-menu"></div>
+</div>
+<header id="sub-header" style="display:none;">
+    <div class="header-left">
+        <h3 id="user-greet">Welcome</h3>
+        <div style="display:flex; flex-direction:column; line-height:1.2;">
+            <small id="user-role">System Administrator</small>
+            <small id="user-email-header" style="opacity:.8; font-size:.75rem;"></small>
+        </div>
+    </div>
+    <div class="header-right">
+        <button class="btn-theme" onclick="toggleTheme()" id="sub-theme-btn"><i class="fas fa-moon"></i></button>
+        <button class="btn-lang" onclick="toggleLang()" id="sub-lang-btn">العربية</button>
+    </div>
+</header>
+<div id="ov-page" class="page">
+    <div class="card"><div class="card-header"><h3 id="t-ov">Overview</h3><button class="btn-back" onclick="goHome()" id="btn-back-ov">Back</button></div><div class="card-body">
+        <div style="display:flex; gap:20px; flex-wrap:wrap;">
+            <div class="card" style="flex:1; min-width:200px; padding:25px; text-align:center;"><h4 id="l-total">Total Users</h4><h1 id="v-total" style="color:var(--primary); font-size:3rem;">0</h1></div>
+            <div class="card" style="flex:1; min-width:200px; padding:25px; text-align:center;"><h4 id="l-pending">Pending Requests</h4><h1 id="v-pending" style="color:#f59e0b; font-size:3rem;">0</h1></div>
+        </div>
+        <div class="admin-info-card">
+            <h4 id="l-admin-info-title">Current Admin Info:</h4>
+            <p><b><span id="l-admin-name-label">Name:</span></b> <span id="display-admin-name">---</span></p>
+            <p><b><span id="l-admin-email-label">Email:</span></b> <span id="display-admin-email">---</span></p>
+        </div>
+    </div></div>
+</div>
+<div id="docs-page" class="page">
+    <div class="card"><div class="card-header"><h3 id="t-docs">Doctors Management</h3><button class="btn-back" onclick="goHome()" id="btn-back-docs">Back</button></div><div class="card-body">
+        <h4 id="l-reqs">New Registration Requests</h4>
+        <div id="reqs-list" style="margin-top:10px;"></div>
+        <h4 style="margin-top:35px;" id="l-active">Approved Doctors</h4>
+        <div class="filter-container"><div class="sort-dropdown"><button class="sort-btn" onclick="toggleDocSort()"><i class="fas fa-filter"></i> <span id="docs-sort-label">Sort</span></button><div class="dropdown-menu" id="docs-sort-menu"><div class="dropdown-item" onclick="setDocSort('newest')"><i class="fas fa-arrow-down"></i> <span id="sort-newest">Newest</span></div><div class="dropdown-item" onclick="setDocSort('oldest')"><i class="fas fa-arrow-up"></i> <span id="sort-oldest">Oldest</span></div><div class="dropdown-item" onclick="setDocSort('a-z')"><i class="fas fa-arrow-right"></i> A - Z</div></div></div></div>
+        <div style="overflow-x:auto;"><table><thead><tr><th id="h-name">Name</th><th id="h-spec">Specialty</th><th id="h-date">Date</th><th id="h-act">Actions</th></tr></thead><tbody id="docs-table-body"></tbody></table></div>
+    </div></div>
+</div>
+<div id="pats-page" class="page">
+    <div class="card"><div class="card-header"><h3 id="t-pats">Patients Management</h3><button class="btn-back" onclick="goHome()" id="btn-back-pats">Back</button></div><div class="card-body">
+        <div class="filter-container"><div class="sort-dropdown"><button class="sort-btn" onclick="togglePatSort()"><i class="fas fa-filter"></i> <span id="pats-sort-label">Sort</span></button><div class="dropdown-menu" id="pats-sort-menu"><div class="dropdown-item" onclick="setPatSort('newest')"><i class="fas fa-arrow-down"></i> <span id="sort-newest-p">Newest</span></div><div class="dropdown-item" onclick="setPatSort('oldest')"><i class="fas fa-arrow-up"></i> <span id="sort-oldest-p">Oldest</span></div><div class="dropdown-item" onclick="setPatSort('a-z')"><i class="fas fa-arrow-right"></i> A - Z</div></div></div></div>
+        <div style="overflow-x:auto;"><table><thead><tr><th id="h-name-p">Name</th><th id="h-email">Email</th><th id="h-act-p">Actions</th></tr></thead><tbody id="pats-table-body"></tbody></table></div>
+    </div></div>
+</div>
+<div id="msgs-page" class="page">
+    <div class="card"><div class="card-header"><h3 id="t-msgs">Message Center</h3><button class="btn-back" onclick="goHome()" id="btn-back-msgs">Back</button></div><div class="card-body">
+        <div class="filter-container"><div class="sort-dropdown"><button class="sort-btn" onclick="toggleMsgSort()"><i class="fas fa-filter"></i> <span id="msgs-sort-label">Sort</span></button><div class="dropdown-menu" id="msgs-sort-menu"><div class="dropdown-item" onclick="setMsgSort('newest')"><i class="fas fa-arrow-down"></i> <span id="sort-newest-m">Newest</span></div><div class="dropdown-item" onclick="setMsgSort('oldest')"><i class="fas fa-arrow-up"></i> <span id="sort-oldest-m">Oldest</span></div><div class="dropdown-item" onclick="setMsgSort('a-z')"><i class="fas fa-arrow-right"></i> A - Z</div></div></div></div>
+        <div class="messages-layout"><div><h4 id="l-doc-msg"><i class="fas fa-user-md" style="margin-right:8px;"></i> <span id="doc-msg-text">Doctor Messages</span></h4><div class="msg-box" id="doc-msgs"></div></div><div><h4 id="l-pat-msg"><i class="fas fa-users" style="margin-right:8px;"></i> <span id="pat-msg-text">Patient Messages</span></h4><div class="msg-box" id="pat-msgs"></div></div></div>
+    </div></div>
+</div>
+<div id="help-page" class="page">
+    <div class="card"><div class="card-header"><h3 id="t-help">Support & Help</h3><button class="btn-back" onclick="goHome()" id="btn-back-help">Back</button></div><div class="card-body"><div class="chat-container"><div class="chat-messages" id="help-chat"></div><div class="msg-input-area"><input type="text" id="help-input" placeholder=""><button onclick="sendHelpMsg()" id="b-help-send">Send</button></div></div></div></div>
+</div>
+<div id="prof-page" class="page">
+    <div class="card"><div class="card-header"><h3 id="t-prof">Admin Profile</h3><button class="btn-back" onclick="goHome()" id="btn-back-prof">Back</button></div><div class="card-body"><div class="form-container"><div class="input-group"><label id="l-fname">Full Name</label><input type="text" id="edit-name" placeholder=""><small class="input-hint" id="hint-name">Name must consist of 4 segments</small></div><div class="input-group"><label id="l-email-label">Email Address</label><input type="email" id="edit-email" placeholder=""></div><button class="btn-save-all" onclick="saveAdminProfile()" id="b-save">Save Changes</button></div></div></div>
+</div>
+<div id="alert-modal" class="modal-overlay"><div class="modal-box"><h3 id="alert-title">Alert</h3><p id="alert-text" style="margin-top:10px;"></p><button class="btn-close-modal" onclick="closeAlert()" id="btn-alert-close">OK</button></div></div>
+<div id="confirm-modal" class="modal-overlay"><div class="modal-box"><h3 id="confirm-title">Confirm Delete</h3><p id="confirm-text" style="margin:15px 0;"></p><div style="display:flex; gap:10px; justify-content:center; margin-top:20px;"><button class="btn-confirm" id="btn-do-delete" onclick="executeDeletion()">Confirm</button><button class="btn-cancel" id="btn-cancel-delete" onclick="closeConfirmModal()">Cancel</button></div></div></div>
+<div id="chat-modal" class="modal-overlay"><div class="modal-box" style="max-width:550px;"><h3 id="chat-target">Chat</h3><div id="chat-screen" class="chat-history"></div><div class="chat-controls"><input type="text" id="chat-msg-input"><button onclick="sendNewMsg()" id="b-send">Send</button><button onclick="closeChatWindow()" id="btn-close-chat" style="background:#64748b;">Close</button></div></div></div>
+<script>
+    // ==================== API SETTINGS ====================
+    const BASE_URL = 'http://127.0.0.1:8000';
+
+    // Token is saved automatically by login.html in localStorage as access_token.
+    // No manual token input is shown to the user.
+    function getAccessToken() {
+        return localStorage.getItem('access_token') || '';
+    }
+
+    function getHeaders() {
+        return {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + getAccessToken()
+        };
+    }
+
+    async function apiCall(method, endpoint, body = null) {
+        try {
+            const options = { method, headers: getHeaders() };
+            if (body !== null) options.body = JSON.stringify(body);
+
+            const res = await fetch(BASE_URL + endpoint, options);
+
+            if (res.status === 401 || res.status === 403) {
+                showAlert(lang === 'ar'
+                    ? 'يرجى تسجيل الدخول كمسؤول أولاً.'
+                    : 'Please login as admin first.');
+                return null;
+            }
+
+            if (!res.ok) {
+                let errorData = null;
+                try { errorData = await res.json(); } catch (_) {}
+                console.error('API Error:', method, endpoint, res.status, errorData);
+                return null;
+            }
+
+            if (res.status === 204) return {};
+
+            const ct = res.headers.get('content-type') || '';
+            if (ct.includes('application/json')) return await res.json();
+            return {};
+        } catch (e) {
+            console.error('Connection Error:', e);
+            showAlert(lang === 'ar'
+                ? 'خطأ في الاتصال بالخادم.'
+                : 'Connection error. Please check the backend server.');
+            return null;
+        }
+    }
+
+    // ==================== SYSTEM STATE ====================
+    let lang = localStorage.getItem('lang') || 'en';
+    let dark = localStorage.getItem('theme') === 'dark';
+    let admin = {
+        name: localStorage.getItem('eyecare_user_name') || '',
+        email: localStorage.getItem('eyecare_user') || ''
+    };
+    let deletionTarget = null;
+    let activeChatId = null;
+    let activeChatName = '';
+    let docsSortType = 'newest';
+    let patsSortType = 'newest';
+    let msgsSortType = 'newest';
+
+    let docsData = [];
+    let patsData = [];
+    let supportMessages = [];
+    let helpChat = [];
+
+    const text = {
+        ar: {
+            hTitle: 'نظام المسؤول - MediVision',
+            hSub: 'مرحباً بك، اختر القسم الذي تود العمل عليه',
+            greet: 'مرحباً بك، ',
+            role: 'مسؤول النظام',
+            langBtn: 'English',
+            menu: {
+                ov: '<i class="fas fa-chart-bar"></i> نظرة عامة',
+                docs: '<i class="fas fa-user-md"></i> الأطباء',
+                pats: '<i class="fas fa-users"></i> المرضى',
+                msgs: '<i class="fas fa-comments"></i> الرسائل',
+                help: '<i class="fas fa-headset"></i> دعم ومساعدة',
+                prof: '<i class="fas fa-user-circle"></i> البروفايل'
+            },
+            ov: 'نظرة عامة',
+            total: 'إجمالي المستخدمين',
+            pending: 'طلبات معلقة',
+            docsT: 'إدارة الأطباء',
+            patsT: 'إدارة المرضى',
+            msgsT: 'مركز الرسائل',
+            helpT: 'دعم ومساعدة',
+            profT: 'الملف الشخصي',
+            reqs: 'طلبات التسجيل الجديدة',
+            active: 'الأطباء المعتمدون',
+            name: 'الاسم',
+            spec: 'التخصص',
+            date: 'التاريخ',
+            act: 'الإجراءات',
+            email: 'البريد',
+            approve: 'قبول',
+            reject: 'رفض',
+            delete: 'حذف',
+            docM: 'رسائل الأطباء',
+            patM: 'رسائل المرضى',
+            fname: 'الاسم الكامل',
+            emailL: 'البريد الإلكتروني',
+            save: 'حفظ التغييرات',
+            back: 'الرجوع',
+            send: 'إرسال',
+            chat: 'دردشة مع ',
+            placeholder: 'اكتب رسالتك...',
+            hintName: 'يجب أن يتكون الاسم من 4 مقاطع',
+            errorName: 'يجب أن يتكون الاسم من 4 مقاطع ليتم الحفظ!',
+            errorEmpty: 'يرجى تعبئة كافة الحقول!',
+            saveMsg: 'تم حفظ بيانات الملف الشخصي بنجاح!',
+            alertT: 'تنبيه النظام',
+            confTitle: 'تأكيد الحذف',
+            confText: 'هل أنت متأكد من رغبتك في حذف هذا العنصر؟ لا يمكن التراجع عن هذا الإجراء.',
+            confDo: 'تأكيد الحذف',
+            confCancel: 'تراجع',
+            adminTitle: 'معلومات المسؤول الحالي:',
+            adminName: 'الاسم:',
+            adminEmail: 'البريد:',
+            sortNewest: 'الأحدث',
+            sortOldest: 'الأقدم',
+            sortAZ: 'من A إلى Z',
+            close: 'إغلاق',
+            ok: 'موافق',
+            noData: 'لا توجد بيانات',
+            loginNeeded: 'يرجى تسجيل الدخول كمسؤول أولاً.'
+        },
+        en: {
+            hTitle: 'Admin System - MediVision',
+            hSub: 'Welcome, please choose a section',
+            greet: 'Welcome, ',
+            role: 'System Administrator',
+            langBtn: 'العربية',
+            menu: {
+                ov: '<i class="fas fa-chart-bar"></i> Overview',
+                docs: '<i class="fas fa-user-md"></i> Doctors',
+                pats: '<i class="fas fa-users"></i> Patients',
+                msgs: '<i class="fas fa-comments"></i> Messages',
+                help: '<i class="fas fa-headset"></i> Support & Help',
+                prof: '<i class="fas fa-user-circle"></i> Profile'
+            },
+            ov: 'Overview',
+            total: 'Total Users',
+            pending: 'Pending Requests',
+            docsT: 'Doctors Management',
+            patsT: 'Patients Management',
+            msgsT: 'Message Center',
+            helpT: 'Support & Help',
+            profT: 'Admin Profile',
+            reqs: 'New Registration Requests',
+            active: 'Approved Doctors',
+            name: 'Name',
+            spec: 'Specialty',
+            date: 'Date',
+            act: 'Actions',
+            email: 'Email',
+            approve: 'Approve',
+            reject: 'Reject',
+            delete: 'Delete',
+            docM: 'Doctor Messages',
+            patM: 'Patient Messages',
+            fname: 'Full Name',
+            emailL: 'Email Address',
+            save: 'Save Changes',
+            back: 'Back',
+            send: 'Send',
+            chat: 'Chat with ',
+            placeholder: 'Type your message...',
+            hintName: 'Name must consist of 4 segments',
+            errorName: 'Name must consist of 4 segments to save!',
+            errorEmpty: 'Please fill in all fields!',
+            saveMsg: 'Profile data saved successfully!',
+            alertT: 'System Alert',
+            confTitle: 'Confirm Delete',
+            confText: 'Are you sure you want to delete this item? This action cannot be undone.',
+            confDo: 'Confirm',
+            confCancel: 'Cancel',
+            adminTitle: 'Current Admin Info:',
+            adminName: 'Name:',
+            adminEmail: 'Email:',
+            sortNewest: 'Newest',
+            sortOldest: 'Oldest',
+            sortAZ: 'A - Z',
+            close: 'Close',
+            ok: 'OK',
+            noData: 'No data found',
+            loginNeeded: 'Please login as admin first.'
+        }
+    };
+
+    // ==================== NORMALIZERS ====================
+    function getArray(data, keys) {
+        if (Array.isArray(data)) return data;
+        for (const key of keys) {
+            if (Array.isArray(data?.[key])) return data[key];
+        }
+        return [];
+    }
+
+    function normalizeDoctor(d, forcedStatus = null) {
+        const statusValue = String(
+            forcedStatus ||
+            d.activation_status ||
+            d.account_status ||
+            d.status ||
+            (d.is_approved === true ? 'approved' : '') ||
+            'pending'
+        ).toLowerCase();
+
+        const isApproved = ['active', 'approved', 'accepted'].includes(statusValue) || d.is_approved === true;
+
+        return {
+            id: d.doctor_id || d.id || d.user_id,
+            nEn: d.full_name || d.name || d.username || d.email || '',
+            nAr: d.full_name || d.name || d.username || d.email || '',
+            sEn: d.specialty || d.specialization || d.university_name || d.university || '',
+            sAr: d.specialty || d.specialization || d.university_name || d.university || '',
+            d: (d.created_at || d.date_joined || d.activated_at || '').slice(0, 10),
+            st: isApproved ? 'approved' : 'pending',
+            email: d.email || ''
+        };
+    }
+
+    function normalizePatient(p) {
+        return {
+            id: p.patient_id || p.id || p.user_id,
+            nEn: p.full_name || p.name || p.username || p.email || '',
+            nAr: p.full_name || p.name || p.username || p.email || '',
+            e: p.email || ''
+        };
+    }
+
+    function normalizeSupportChat(chat) {
+        const role = String(chat.sender_role || chat.role || chat.user_role || chat.user_type || '').toLowerCase();
+        return {
+            id: chat.chat_id || chat.id || chat.support_chat_id,
+            senderName: chat.sender_name || chat.user_name || chat.name || chat.full_name || 'Unknown',
+            senderRole: role,
+            lastMsg: chat.last_message || chat.text_content || chat.message || chat.content || '',
+            createdAt: chat.created_at || chat.updated_at || ''
+        };
+    }
+
+    function isDoctorRole(role) {
+        return String(role || '').toLowerCase() === 'doctor';
+    }
+
+    // ==================== API LOADERS ====================
+    async function loadAdminProfile() {
+        const data = await apiCall('GET', '/api/admin/profile/');
+        if (data) {
+            const obj = data.admin || data.profile || data;
+            admin.name = obj.full_name || obj.name || admin.name || '';
+            admin.email = obj.email || admin.email || localStorage.getItem('eyecare_user') || '';
+            localStorage.setItem('eyecare_user_name', admin.name);
+            updateScreen();
+        }
+    }
+
+    async function loadDashboard() {
+        const data = await apiCall('GET', '/api/admin/dashboard/');
+        if (data) {
+            document.getElementById('v-total').innerText = data.total_users ?? data.users_count ?? (docsData.length + patsData.length);
+            document.getElementById('v-pending').innerText = data.pending_requests ?? data.pending_doctors ?? docsData.filter(d => d.st === 'pending').length;
+        } else {
+            await Promise.all([loadDoctors(false), loadPatients(false)]);
+            drawData();
+        }
+    }
+
+    async function loadDoctors(redraw = true) {
+        const data = await apiCall('GET', '/api/admin/doctors/');
+        if (!data) return;
+
+        const pending = getArray(data, ['pending_doctors', 'pending', 'doctor_requests', 'requests']).map(d => normalizeDoctor(d, 'pending'));
+        const active = getArray(data, ['active_doctors', 'approved_doctors', 'approved', 'doctors', 'results']).map(d => normalizeDoctor(d));
+
+        let merged = [];
+        if (pending.length || active.length) {
+            merged = [...pending, ...active];
+        } else if (Array.isArray(data)) {
+            merged = data.map(d => normalizeDoctor(d));
+        }
+
+        const seen = new Set();
+        docsData = merged.filter(d => {
+            if (!d.id || seen.has(d.id)) return false;
+            seen.add(d.id);
+            return true;
+        });
+
+        if (redraw) drawData();
+    }
+
+    async function loadPatients(redraw = true) {
+        const data = await apiCall('GET', '/api/admin/patients/');
+        if (!data) return;
+
+        patsData = getArray(data, ['patients', 'results', 'data']).map(normalizePatient).filter(p => p.id);
+        if (redraw) drawData();
+    }
+
+    async function loadSupportMessages() {
+        const data = await apiCall('GET', '/api/admin/support-chats/');
+        if (!data) return;
+        supportMessages = getArray(data, ['chats', 'support_chats', 'results', 'messages']).map(normalizeSupportChat).filter(c => c.id);
+        renderSupportMessages();
+    }
+
+    // ==================== ADMIN ACTIONS ====================
+    async function approveDoctor(id) {
+        let data = await apiCall('PATCH', `/api/admin/doctors/${id}/approve/`, { activation_status: 'active' });
+        if (data === null) data = await apiCall('POST', `/api/admin/doctors/${id}/approve/`, {});
+
+        if (data !== null) {
+            const d = docsData.find(x => x.id === id);
+            if (d) d.st = 'approved';
+            drawData();
+        } else {
+            showAlert(lang === 'ar' ? 'فشل قبول الطبيب.' : 'Doctor approval failed.');
+        }
+    }
+
+    async function deleteDoctor(id) {
+        const res = await apiCall('DELETE', `/api/admin/doctors/${id}/`);
+        if (res !== null) {
+            docsData = docsData.filter(x => x.id !== id);
+            closeConfirmModal();
+            drawData();
+        } else {
+            showAlert(lang === 'ar' ? 'فشل حذف الطبيب.' : 'Doctor delete failed.');
+        }
+    }
+
+    async function deletePatient(id) {
+        const res = await apiCall('DELETE', `/api/admin/patients/${id}/`);
+        if (res !== null) {
+            patsData = patsData.filter(x => x.id !== id);
+            closeConfirmModal();
+            drawData();
+        } else {
+            showAlert(lang === 'ar' ? 'فشل حذف المريض.' : 'Patient delete failed.');
+        }
+    }
+
+    async function saveAdminProfileAPI(name, email) {
+        let data = await apiCall('PUT', '/api/admin/profile/', { full_name: name, email });
+        if (data === null) data = await apiCall('PATCH', '/api/admin/profile/', { full_name: name, email });
+
+        if (data !== null) {
+            admin.name = name;
+            admin.email = email;
+            localStorage.setItem('eyecare_user_name', name);
+            localStorage.setItem('eyecare_user', email);
+            updateScreen();
+            showAlert(text[lang].saveMsg);
+        } else {
+            showAlert(lang === 'ar' ? 'فشل حفظ الملف الشخصي.' : 'Profile save failed.');
+        }
+    }
+
+    // ==================== SUPPORT CHAT ====================
+    function renderSupportMessages() {
+        const dMsgs = document.getElementById('doc-msgs');
+        const pMsgs = document.getElementById('pat-msgs');
+        dMsgs.innerHTML = '';
+        pMsgs.innerHTML = '';
+
+        let list = [...supportMessages];
+        if (msgsSortType === 'a-z') list.sort((a, b) => a.senderName.localeCompare(b.senderName));
+        else if (msgsSortType === 'oldest') list.reverse();
+
+        let docCount = 0;
+        let patCount = 0;
+
+        list.forEach(chat => {
+            const row = document.createElement('div');
+            row.className = 'msg-row';
+            const isDoc = isDoctorRole(chat.senderRole);
+            row.innerHTML = `<i class="fas fa-${isDoc ? 'user-md' : 'user'}"></i><div><b>${chat.senderName}</b><br><small>${chat.lastMsg || '-'}</small></div>`;
+            row.onclick = () => openSupportChat(chat.id, chat.senderName);
+
+            if (isDoc) { dMsgs.appendChild(row); docCount++; }
+            else { pMsgs.appendChild(row); patCount++; }
+        });
+
+        if (docCount === 0) dMsgs.innerHTML = `<div style="padding:15px;color:#64748b;">${text[lang].noData}</div>`;
+        if (patCount === 0) pMsgs.innerHTML = `<div style="padding:15px;color:#64748b;">${text[lang].noData}</div>`;
+    }
+
+    async function openSupportChat(chatId, senderName) {
+        activeChatId = chatId;
+        activeChatName = senderName;
+        const t = text[lang];
+        document.getElementById('chat-target').innerText = t.chat + senderName;
+        document.getElementById('chat-modal').classList.add('active');
+
+        const data = await apiCall('GET', `/api/admin/support-chats/${chatId}/messages/`);
+        const screen = document.getElementById('chat-screen');
+        screen.innerHTML = '';
+
+        const messages = getArray(data || [], ['messages', 'results', 'data']);
+        messages.forEach(m => renderChatBubble(m));
+        screen.scrollTop = screen.scrollHeight;
+    }
+
+    function renderChatBubble(m) {
+        const screen = document.getElementById('chat-screen');
+        const role = String(m.sender_role || m.role || m.sender || '').toLowerCase();
+        const isAdmin = role === 'admin';
+        const d = document.createElement('div');
+        d.style.cssText = `margin-bottom:10px; padding:10px; border-radius:12px; max-width:75%; ${isAdmin ? 'background:var(--primary); color:white; margin-left:auto;' : 'background:var(--border); margin-right:auto;'}`;
+        d.innerText = m.text_content || m.message || m.content || m.text || '';
+        screen.appendChild(d);
+    }
+
+    async function sendSupportReply() {
+        const inp = document.getElementById('chat-msg-input');
+        const msg = inp.value.trim();
+        if (!msg || !activeChatId) return;
+
+        let data = await apiCall('POST', `/api/admin/support-chats/${activeChatId}/messages/`, { text_content: msg });
+        if (data === null) data = await apiCall('POST', `/api/admin/support-chats/${activeChatId}/messages/`, { message: msg });
+
+        if (data !== null) {
+            inp.value = '';
+            await openSupportChat(activeChatId, activeChatName);
+            await loadSupportMessages();
+        } else {
+            showAlert(lang === 'ar' ? 'فشل إرسال الرسالة.' : 'Message send failed.');
+        }
+    }
+
+    // ==================== UI HELPERS ====================
+    function toggleLang() {
+        lang = lang === 'en' ? 'ar' : 'en';
+        localStorage.setItem('lang', lang);
+        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        document.documentElement.lang = lang;
+        updateScreen();
+    }
+
+    function toggleTheme() {
+        dark = !dark;
+        localStorage.setItem('theme', dark ? 'dark' : 'light');
+        document.body.classList.toggle('dark-mode', dark);
+        const icon = dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        document.getElementById('home-theme-btn').innerHTML = icon;
+        document.getElementById('sub-theme-btn').innerHTML = icon;
+    }
+
+    function capitalizeFirstLetter(str) {
+        if (!str) return '';
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function toggleDocSort() {
+        document.getElementById('docs-sort-menu').classList.toggle('active');
+        closeOtherMenus('docs');
+    }
+
+    function togglePatSort() {
+        document.getElementById('pats-sort-menu').classList.toggle('active');
+        closeOtherMenus('pats');
+    }
+
+    function toggleMsgSort() {
+        document.getElementById('msgs-sort-menu').classList.toggle('active');
+        closeOtherMenus('msgs');
+    }
+
+    function closeOtherMenus(except) {
+        if (except !== 'docs') document.getElementById('docs-sort-menu').classList.remove('active');
+        if (except !== 'pats') document.getElementById('pats-sort-menu').classList.remove('active');
+        if (except !== 'msgs') document.getElementById('msgs-sort-menu').classList.remove('active');
+    }
+
+    function setDocSort(type) {
+        docsSortType = type;
+        document.getElementById('docs-sort-menu').classList.remove('active');
+        updateSortLabel('docs');
+        drawData();
+    }
+
+    function setPatSort(type) {
+        patsSortType = type;
+        document.getElementById('pats-sort-menu').classList.remove('active');
+        updateSortLabel('pats');
+        drawData();
+    }
+
+    function setMsgSort(type) {
+        msgsSortType = type;
+        document.getElementById('msgs-sort-menu').classList.remove('active');
+        updateSortLabel('msgs');
+        renderSupportMessages();
+    }
+
+    function updateSortLabel(type) {
+        const t = text[lang];
+        let label = t.sortNewest;
+        if (type === 'docs') {
+            if (docsSortType === 'oldest') label = t.sortOldest;
+            else if (docsSortType === 'a-z') label = t.sortAZ;
+            document.getElementById('docs-sort-label').innerText = label;
+        } else if (type === 'pats') {
+            if (patsSortType === 'oldest') label = t.sortOldest;
+            else if (patsSortType === 'a-z') label = t.sortAZ;
+            document.getElementById('pats-sort-label').innerText = label;
+        } else if (type === 'msgs') {
+            if (msgsSortType === 'oldest') label = t.sortOldest;
+            else if (msgsSortType === 'a-z') label = t.sortAZ;
+            document.getElementById('msgs-sort-label').innerText = label;
+        }
+    }
+
+    function sortData(data, sortType, nameField) {
+        const sorted = [...data];
+        if (sortType === 'a-z') {
+            sorted.sort((a, b) => {
+                const nameA = (lang === 'ar' ? a[nameField + 'Ar'] : a[nameField + 'En'] || '').toLowerCase();
+                const nameB = (lang === 'ar' ? b[nameField + 'Ar'] : b[nameField + 'En'] || '').toLowerCase();
+                return nameA.localeCompare(nameB);
+            });
+        } else if (sortType === 'oldest') {
+            sorted.reverse();
+        }
+        return sorted;
+    }
+
+    function openPage(id) {
+        if (!getAccessToken()) {
+            showAlert(text[lang].loginNeeded);
+            return;
+        }
+
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.getElementById('sub-header').style.display = id === 'home-page' ? 'none' : 'flex';
+        closeOtherMenus('none');
+        updateScreen();
+
+        if (id === 'ov-page') loadDashboard();
+        else if (id === 'docs-page') loadDoctors();
+        else if (id === 'pats-page') loadPatients();
+        else if (id === 'msgs-page') loadSupportMessages();
+        else if (id === 'prof-page') loadAdminProfile();
+    }
+
+    function goHome() {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById('home-page').classList.add('active');
+        document.getElementById('sub-header').style.display = 'none';
+        updateScreen();
+    }
+
+    function updateScreen() {
+        const t = text[lang];
+        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        document.documentElement.lang = lang;
+        document.body.classList.toggle('dark-mode', dark);
+
+        document.getElementById('h-title').innerText = t.hTitle;
+        document.getElementById('h-sub').innerText = t.hSub;
+        document.getElementById('home-lang-btn').innerText = t.langBtn;
+        document.getElementById('sub-lang-btn').innerText = t.langBtn;
+
+        const themeIcon = dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        document.getElementById('home-theme-btn').innerHTML = themeIcon;
+        document.getElementById('sub-theme-btn').innerHTML = themeIcon;
+
+        const menu = document.getElementById('main-menu');
+        menu.innerHTML = '';
+        for (const [key, val] of Object.entries(t.menu)) {
+            const card = document.createElement('div');
+            card.className = 'home-card';
+            card.onclick = () => openPage(key + '-page');
+            const iconMatch = val.match(/<i[^>]*><\/i>/);
+            const icon = iconMatch ? iconMatch[0] : '';
+            const textOnly = val.replace(/<i[^>]*><\/i>\s*/, '');
+            card.innerHTML = `${icon}<span>${textOnly}</span>`;
+            menu.appendChild(card);
+        }
+
+        const greetName = admin.name ? capitalizeFirstLetter(admin.name.split(' ')[0]) : '';
+        document.getElementById('user-greet').innerText = t.greet + greetName;
+        document.getElementById('user-role').innerText = t.role;
+        document.getElementById('user-email-header').innerText = admin.email || '';
+
+        document.getElementById('t-ov').innerText = t.ov;
+        document.getElementById('t-docs').innerText = t.docsT;
+        document.getElementById('t-pats').innerText = t.patsT;
+        document.getElementById('t-msgs').innerText = t.msgsT;
+        document.getElementById('t-help').innerText = t.helpT;
+        document.getElementById('t-prof').innerText = t.profT;
+
+        document.getElementById('btn-back-ov').innerText = t.back;
+        document.getElementById('btn-back-docs').innerText = t.back;
+        document.getElementById('btn-back-pats').innerText = t.back;
+        document.getElementById('btn-back-msgs').innerText = t.back;
+        document.getElementById('btn-back-help').innerText = t.back;
+        document.getElementById('btn-back-prof').innerText = t.back;
+
+        document.getElementById('l-total').innerText = t.total;
+        document.getElementById('l-pending').innerText = t.pending;
+        document.getElementById('l-reqs').innerText = t.reqs;
+        document.getElementById('l-active').innerText = t.active;
+        document.getElementById('h-name').innerText = t.name;
+        document.getElementById('h-spec').innerText = t.spec;
+        document.getElementById('h-date').innerText = t.date;
+        document.getElementById('h-act').innerText = t.act;
+        document.getElementById('h-name-p').innerText = t.name;
+        document.getElementById('h-email').innerText = t.email;
+        document.getElementById('h-act-p').innerText = t.act;
+        document.getElementById('doc-msg-text').innerText = t.docM;
+        document.getElementById('pat-msg-text').innerText = t.patM;
+
+        document.getElementById('l-fname').innerText = t.fname;
+        document.getElementById('l-email-label').innerText = t.emailL;
+        document.getElementById('hint-name').innerText = t.hintName;
+        document.getElementById('b-save').innerText = t.save;
+        document.getElementById('b-send').innerText = t.send;
+        document.getElementById('b-help-send').innerText = t.send;
+        document.getElementById('btn-close-chat').innerText = t.close;
+        document.getElementById('chat-msg-input').placeholder = t.placeholder;
+        document.getElementById('help-input').placeholder = t.placeholder;
+        document.getElementById('edit-name').placeholder = t.fname;
+        document.getElementById('edit-email').placeholder = t.emailL;
+        document.getElementById('edit-name').value = admin.name || '';
+        document.getElementById('edit-email').value = admin.email || '';
+
+        document.getElementById('l-admin-info-title').innerText = t.adminTitle;
+        document.getElementById('l-admin-name-label').innerText = t.adminName;
+        document.getElementById('l-admin-email-label').innerText = t.adminEmail;
+        document.getElementById('display-admin-name').innerText = admin.name || '---';
+        document.getElementById('display-admin-email').innerText = admin.email || '---';
+
+        document.getElementById('alert-title').innerText = t.alertT;
+        document.getElementById('confirm-title').innerText = t.confTitle;
+        document.getElementById('confirm-text').innerText = t.confText;
+        document.getElementById('btn-do-delete').innerText = t.confDo;
+        document.getElementById('btn-cancel-delete').innerText = t.confCancel;
+        document.getElementById('btn-alert-close').innerText = t.ok;
+
+        document.getElementById('sort-newest').innerText = t.sortNewest;
+        document.getElementById('sort-oldest').innerText = t.sortOldest;
+        document.getElementById('sort-newest-p').innerText = t.sortNewest;
+        document.getElementById('sort-oldest-p').innerText = t.sortOldest;
+        document.getElementById('sort-newest-m').innerText = t.sortNewest;
+        document.getElementById('sort-oldest-m').innerText = t.sortOldest;
+
+        updateSortLabel('docs');
+        updateSortLabel('pats');
+        updateSortLabel('msgs');
+        drawData();
+        refreshHelpChat();
+    }
+
+    function drawData() {
+        const t = text[lang];
+        document.getElementById('v-total').innerText = docsData.length + patsData.length;
+        document.getElementById('v-pending').innerText = docsData.filter(d => d.st === 'pending').length;
+
+        const reqsDiv = document.getElementById('reqs-list');
+        reqsDiv.innerHTML = '';
+        const pendingDocs = docsData.filter(d => d.st === 'pending');
+
+        if (pendingDocs.length === 0) {
+            reqsDiv.innerHTML = `<div style="padding:12px;color:#64748b;">${t.noData}</div>`;
+        }
+
+        pendingDocs.forEach(d => {
+            const item = document.createElement('div');
+            item.className = 'card';
+            item.style.padding = '12px';
+            item.style.display = 'flex';
+            item.style.justifyContent = 'space-between';
+            item.style.alignItems = 'center';
+            item.innerHTML = `<div><b>${lang === 'ar' ? d.nAr : d.nEn}</b><br><small>${d.email || (lang === 'ar' ? d.sAr : d.sEn) || '-'}</small></div><div><button class="btn-action btn-approve" onclick="changeDocStatus(${d.id}, 'approved')">${t.approve}</button><button class="btn-action btn-reject" onclick="askToDelete('doc', ${d.id})">${t.reject}</button></div>`;
+            reqsDiv.appendChild(item);
+        });
+
+        const docsTable = document.getElementById('docs-table-body');
+        docsTable.innerHTML = '';
+        let approvedDocs = sortData(docsData.filter(d => d.st === 'approved'), docsSortType, 'n');
+        approvedDocs.forEach(d => {
+            const row = docsTable.insertRow();
+            row.innerHTML = `<td>${lang === 'ar' ? d.nAr : d.nEn}</td><td>${lang === 'ar' ? d.sAr : d.sEn || '-'}</td><td>${d.d || '-'}</td><td><button class="btn-action btn-reject" onclick="askToDelete('doc', ${d.id})">${t.delete}</button></td>`;
+        });
+        if (approvedDocs.length === 0) {
+            const row = docsTable.insertRow();
+            row.innerHTML = `<td colspan="4" style="text-align:center;color:#64748b;">${t.noData}</td>`;
+        }
+
+        const patsTable = document.getElementById('pats-table-body');
+        patsTable.innerHTML = '';
+        let sortedPats = sortData(patsData, patsSortType, 'n');
+        sortedPats.forEach(p => {
+            const row = patsTable.insertRow();
+            row.innerHTML = `<td>${lang === 'ar' ? p.nAr : p.nEn}</td><td>${p.e || '-'}</td><td><button class="btn-action btn-reject" onclick="askToDelete('pat', ${p.id})">${t.delete}</button></td>`;
+        });
+        if (sortedPats.length === 0) {
+            const row = patsTable.insertRow();
+            row.innerHTML = `<td colspan="3" style="text-align:center;color:#64748b;">${t.noData}</td>`;
+        }
+    }
+
+    function changeDocStatus(id, status) {
+        if (status === 'approved') approveDoctor(id);
+    }
+
+    function askToDelete(type, id) {
+        deletionTarget = { type, id };
+        const t = text[lang];
+        document.getElementById('confirm-title').innerText = t.confTitle;
+        document.getElementById('confirm-text').innerText = t.confText;
+        document.getElementById('btn-do-delete').innerText = t.confDo;
+        document.getElementById('btn-cancel-delete').innerText = t.confCancel;
+        document.getElementById('confirm-modal').classList.add('active');
+    }
+
+    function closeConfirmModal() {
+        document.getElementById('confirm-modal').classList.remove('active');
+        deletionTarget = null;
+    }
+
+    function executeDeletion() {
+        if (!deletionTarget) return;
+        if (deletionTarget.type === 'doc') deleteDoctor(deletionTarget.id);
+        else if (deletionTarget.type === 'pat') deletePatient(deletionTarget.id);
+    }
+
+    function showAlert(msg) {
+        document.getElementById('alert-title').innerText = text[lang].alertT;
+        document.getElementById('alert-text').innerText = msg;
+        document.getElementById('alert-modal').classList.add('active');
+    }
+
+    function closeAlert() {
+        document.getElementById('alert-modal').classList.remove('active');
+    }
+
+    function saveAdminProfile() {
+        const nameInp = document.getElementById('edit-name').value.trim();
+        const emailInp = document.getElementById('edit-email').value.trim();
+        const t = text[lang];
+
+        if (!nameInp || !emailInp) {
+            showAlert(t.errorEmpty);
+            return;
+        }
+
+        const parts = nameInp.split(/\s+/).filter(Boolean);
+        if (parts.length !== 4) {
+            showAlert(t.errorName);
+            return;
+        }
+
+        const capitalizedName = parts.map(p => capitalizeFirstLetter(p)).join(' ');
+        saveAdminProfileAPI(capitalizedName, emailInp);
+    }
+
+    function sendHelpMsg() {
+        const inp = document.getElementById('help-input');
+        const value = inp.value.trim();
+        if (!value) return;
+        helpChat.push({ type: 'user', msg: value });
+        inp.value = '';
+        refreshHelpChat();
+    }
+
+    function refreshHelpChat() {
+        const container = document.getElementById('help-chat');
+        container.innerHTML = '';
+        helpChat.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'msg-item ' + item.type;
+            div.innerText = item.msg;
+            container.appendChild(div);
+        });
+        container.scrollTop = container.scrollHeight;
+    }
+
+    function closeChatWindow() {
+        document.getElementById('chat-modal').classList.remove('active');
+        activeChatId = null;
+        activeChatName = '';
+    }
+
+    function sendNewMsg() {
+        sendSupportReply();
+    }
+
+    // Eye animation
+    let angle = 0;
+    function animatePupils() {
+        angle += (2 * Math.PI) / 1320;
+        const x = Math.cos(angle) * 6;
+        const y = Math.sin(angle) * 6;
+        const pLeft = document.getElementById('p-left');
+        const pRight = document.getElementById('p-right');
+        if (pLeft && pRight) {
+            pLeft.setAttribute('cx', 35 + x);
+            pLeft.setAttribute('cy', 60 + y);
+            pRight.setAttribute('cx', 85 + x);
+            pRight.setAttribute('cy', 60 + y);
+        }
+        requestAnimationFrame(animatePupils);
+    }
+
+    // ==================== START APP ====================
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.sort-dropdown')) closeOtherMenus('none');
+    });
+
+    if (lang !== 'ar' && lang !== 'en') lang = 'en';
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = lang;
+    document.body.classList.toggle('dark-mode', dark);
+
+    animatePupils();
+    updateScreen();
+
+    if (getAccessToken()) {
+        loadAdminProfile();
+    }
+</script>
+
+</body>
+</html>

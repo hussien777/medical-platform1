@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="html-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor System - MediVision</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --teal: #06B6D4;
+            --blue: #0EA5E9;
+            --green: #16a34a;
+            --red: #dc2626;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --muted: #64748b;
+            --border: #e2e8f0;
+        }
+        body.dark {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f1f5f9;
+            --muted: #cbd5e1;
+            --border: #334155;
+        }
+        body { font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; transition: 0.25s; }
+        button, input, select, textarea { font-family: 'Cairo', sans-serif; }
+        .page { display: none; min-height: 100vh; }
+        .page.active { display: block; }
+        .universal-header { padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .header-btns-group { display: flex; gap: 0.75rem; align-items: center; }
+        .logo-container { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; }
+        .btn-top, .btn-primary, .btn-success, .btn-danger, .btn-secondary {
+            padding: 0.55rem 1rem; border: none; border-radius: 0.6rem; cursor: pointer; font-weight: 700;
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; transition: 0.2s; font-size: 0.9rem;
+        }
+        .btn-top { border: 1px solid var(--border); background: var(--card); color: var(--text); }
+        .btn-primary { background: linear-gradient(135deg, var(--teal), var(--blue)); color: #fff; }
+        .btn-success { background: linear-gradient(135deg, #16a34a, #15803d); color: #fff; }
+        .btn-danger { background: var(--red); color: #fff; }
+        .btn-secondary { background: #94a3b8; color: #fff; }
+        .btn-primary:disabled, .btn-success:disabled { opacity: 0.65; cursor: not-allowed; }
+        .home-content { text-align: center; padding: 1rem; max-width: 980px; margin: 0 auto; }
+        .main-logo-static { width: 140px; height: 140px; margin: 1.5rem auto 2rem; }
+        .home-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; margin-bottom: 0.5rem; color: var(--teal); }
+        .home-sub { color: var(--muted); font-size: 1.1rem; }
+        .home-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1.25rem; margin-top: 2rem; }
+        .home-card { background: var(--card); border: 1px solid var(--border); padding: 2rem 1.25rem; border-radius: 1rem; cursor: pointer; transition: 0.25s; }
+        .home-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(6,182,212,0.14); border-color: var(--teal); }
+        .home-card-icon { font-size: 2.5rem; margin-bottom: 0.8rem; color: var(--teal); }
+        .home-card-name { font-weight: 800; font-size: 1.05rem; }
+        header { background: linear-gradient(135deg, var(--teal), var(--blue)); color: white; position: sticky; top: 0; z-index: 100; }
+        header .universal-header { padding: 0.75rem 2rem; }
+        header h1 { font-size: 1.35rem; }
+        .btn-icon { width: 40px; height: 40px; border: none; border-radius: 50%; background: rgba(255,255,255,0.22); color: white; cursor: pointer; font-size: 1rem; }
+        main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .tab { display: none; }
+        .tab.active { display: block; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 0.85rem; overflow: hidden; margin-bottom: 1.5rem; }
+        .card-header { padding: 1.25rem 1.5rem; background: linear-gradient(135deg, rgba(6,182,212,0.06), rgba(14,165,233,0.06)); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .card-title { font-size: 1.15rem; font-weight: 800; }
+        .card-content { padding: 1.5rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1rem; }
+        .info-item { padding: 1rem; background: var(--bg); border-radius: 0.7rem; border: 1px solid var(--border); }
+        .info-label { font-size: 0.85rem; font-weight: 800; color: var(--teal); margin-bottom: 0.25rem; }
+        .info-value { color: var(--text); word-break: break-word; }
+        .item { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid var(--border); border-radius: 0.7rem; background: var(--card); margin-bottom: 0.8rem; }
+        .item-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+        .small { font-size: 0.85rem; color: var(--muted); }
+        .badge { padding: 0.35rem 0.7rem; border-radius: 999px; font-size: 0.78rem; font-weight: 800; display: inline-block; }
+        .badge.pending { background: #fef3c7; color: #92400e; }
+        .badge.confirmed { background: #dcfce7; color: #166534; }
+        .badge.cancelled { background: #fee2e2; color: #991b1b; }
+        .chat-box { height: 360px; border: 1px solid var(--border); border-radius: 0.8rem; padding: 1rem; overflow-y: auto; margin-bottom: 1rem; background: var(--bg); }
+        .chat-message { margin-bottom: 0.8rem; display: flex; }
+        .chat-message.sent { justify-content: flex-end; }
+        .chat-bubble { padding: 0.75rem 1rem; border-radius: 0.8rem; max-width: min(70%, 640px); word-wrap: break-word; }
+        .chat-message.received .chat-bubble { background: var(--border); color: var(--text); }
+        .chat-message.sent .chat-bubble { background: linear-gradient(135deg, var(--teal), var(--blue)); color: white; }
+        .chat-input-group { display: flex; gap: 0.6rem; }
+        .chat-input-group input { flex: 1; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+        .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+        .form-group label { font-weight: 800; color: var(--text); }
+        .form-group input, .form-group select, .form-group textarea { padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.6rem; background: var(--card); color: var(--text); }
+        .form-group.full { grid-column: 1 / -1; }
+        .error-hint { color: var(--red); font-size: 0.82rem; display: none; font-weight: 700; }
+        .profile-img-wrapper { width: 170px; height: 170px; border-radius: 0.8rem; border: 4px solid var(--teal); overflow: hidden; background: var(--bg); margin-bottom: 1rem; }
+        .profile-img-wrapper img { width: 100%; height: 100%; object-fit: contain; }
+        .scan-img { width: 84px; height: 84px; object-fit: cover; border-radius: 10px; border: 1px solid var(--border); }
+        .analysis-box { border: 2px solid var(--teal); border-radius: 0.8rem; padding: 1rem; margin-top: 1rem; display: none; background: var(--card); }
+        .analysis-img { max-width: 100%; max-height: 340px; object-fit: contain; border-radius: 0.8rem; border: 1px solid var(--border); margin-bottom: 1rem; background: #000; }
+        .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.4rem; }
+        .calendar-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); border-radius: 0.55rem; font-weight: 800; background: var(--bg); }
+        .calendar-day.booked { background: #fee2e2; color: #991b1b; border-color: #dc2626; }
+        .calendar-day.available { background: #dcfce7; color: #166534; border-color: #16a34a; }
+        .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 0.9rem 1.35rem; border-radius: 0.7rem; z-index: 9999; display: none; box-shadow: 0 12px 24px rgba(0,0,0,0.18); }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 3000; align-items: center; justify-content: center; padding: 1rem; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: var(--card); border-radius: 1rem; padding: 1.5rem; width: min(440px, 95vw); box-shadow: 0 20px 40px rgba(0,0,0,0.25); }
+        .modal-box h3 { margin-bottom: 0.75rem; color: var(--teal); }
+        .modal-actions { display: flex; gap: 0.75rem; margin-top: 1.2rem; }
+        @media (max-width: 700px) { main { padding: 1rem; } .item { flex-direction: column; align-items: flex-start; } .chat-input-group { flex-direction: column; } }
+    </style>
+</head>
+<body id="mainBody">
+
+<div id="homePage" class="page active">
+    <div class="universal-header">
+        <div class="logo-container">
+            <svg style="width:60px;height:60px" viewBox="0 0 120 120">
+                <g><circle cx="35" cy="60" r="28" fill="none" stroke="#06B6D4" stroke-width="2"/><circle cx="35" cy="60" r="18" fill="#0EA5E9"/><circle cx="35" cy="60" r="10" fill="white"/></g>
+                <g><circle cx="85" cy="60" r="28" fill="none" stroke="#06B6D4" stroke-width="2"/><circle cx="85" cy="60" r="18" fill="#0EA5E9"/><circle cx="85" cy="60" r="10" fill="white"/></g>
+            </svg>
+        </div>
+        <div class="header-btns-group">
+            <button class="btn-top" id="homeThemeBtn"><i id="homeThemeIcon" class="fas fa-moon"></i></button>
+            <button class="btn-top" id="homeLangBtn">العربية</button>
+            <button class="btn-top" onclick="logout()"><i class="fas fa-right-from-bracket"></i> <span data-i="logout">Logout</span></button>
+        </div>
+    </div>
+    <div class="home-content">
+        <svg class="main-logo-static" viewBox="0 0 120 120">
+            <g><circle cx="35" cy="60" r="28" fill="none" stroke="#06B6D4" stroke-width="2"/><circle cx="35" cy="60" r="18" fill="#0EA5E9"/><circle cx="35" cy="60" r="10" fill="white"/></g>
+            <g><circle cx="85" cy="60" r="28" fill="none" stroke="#06B6D4" stroke-width="2"/><circle cx="85" cy="60" r="18" fill="#0EA5E9"/><circle cx="85" cy="60" r="10" fill="white"/></g>
+        </svg>
+        <h1 class="home-title" id="hTitle">Doctor System - MediVision</h1>
+        <p class="home-sub" id="hSub">Welcome Doctor, please choose a section</p>
+        <div class="home-grid" id="homeGrid"></div>
+    </div>
+</div>
+
+<div id="appPage" class="page">
+    <header>
+        <div class="universal-header">
+            <div class="logo-container">
+                <svg style="width:60px;height:60px" viewBox="0 0 120 120">
+                    <g><circle cx="35" cy="60" r="28" fill="none" stroke="white" stroke-width="2"/><circle cx="35" cy="60" r="18" fill="white" fill-opacity="0.3"/><circle cx="35" cy="60" r="10" fill="white"/></g>
+                    <g><circle cx="85" cy="60" r="28" fill="none" stroke="white" stroke-width="2"/><circle cx="85" cy="60" r="18" fill="white" fill-opacity="0.3"/><circle cx="85" cy="60" r="10" fill="white"/></g>
+                </svg>
+            </div>
+            <h1 id="greeting">Welcome Doctor</h1>
+            <div class="header-btns-group">
+                <button class="btn-icon" id="themeBtn"><i id="themeIcon" class="fas fa-moon"></i></button>
+                <button class="btn-icon" id="langBtn">AR</button>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div id="dashboard" class="tab">
+            <div class="card"><div class="card-header"><div class="card-title" data-i="dashboard">Dashboard</div><button class="btn-primary" onclick="goHome()" data-i="back">Back</button></div>
+                <div class="card-content"><div class="grid">
+                    <div class="info-item"><div class="info-label" data-i="name">Name</div><div class="info-value" id="dashName">--</div></div>
+                    <div class="info-item"><div class="info-label" data-i="gender">Gender</div><div class="info-value" id="dashGender">--</div></div>
+                    <div class="info-item"><div class="info-label" data-i="phone">Phone</div><div class="info-value" id="dashPhone">--</div></div>
+                    <div class="info-item"><div class="info-label" data-i="clinic">Clinic</div><div class="info-value" id="dashClinic">--</div></div>
+                    <div class="info-item"><div class="info-label" data-i="appointments">Appointments</div><div class="info-value" id="dashApps">0</div></div>
+                    <div class="info-item"><div class="info-label" data-i="rating">Average Rating</div><div class="info-value" id="dashRating">0</div></div>
+                </div></div>
+            </div>
+        </div>
+
+        <div id="appointments" class="tab">
+            <div class="card"><div class="card-header"><div class="card-title" data-i="appointments">Appointments</div><button class="btn-primary" onclick="goHome()" data-i="back">Back</button></div><div class="card-content" id="appointmentsList"></div></div>
+            <div class="card"><div class="card-header"><div class="card-title" data-i="calendar">Calendar</div></div><div class="card-content"><div class="calendar" id="doctorCalendar"></div></div></div>
+        </div>
+
+        <div id="eyescan" class="tab">
+            <div class="card"><div class="card-header"><div class="card-title" data-i="aiScans">Patient AI Scans</div><div class="item-actions"><button class="btn-primary" onclick="loadDoctorAiScans()" data-i="refresh">Refresh</button><button class="btn-primary" onclick="goHome()" data-i="back">Back</button></div></div>
+                <div class="card-content">
+                    <div id="doctorAiScansList"></div>
+                    <div class="analysis-box" id="analysisBox">
+                        <h3 style="color:var(--teal); margin-bottom:1rem;" data-i="scanDetails">Scan Details</h3>
+                        <img id="scanImagePreview" class="analysis-img" src="" alt="AI scan image">
+                        <div class="grid">
+                            <div class="info-item"><div class="info-label" data-i="patient">Patient</div><div id="scanPatientName">-</div></div>
+                            <div class="info-item"><div class="info-label">Email</div><div id="scanPatientEmail">-</div></div>
+                            <div class="info-item"><div class="info-label" data-i="operation">Operation</div><div id="scanOperationNumber">-</div></div>
+                            <div class="info-item"><div class="info-label" data-i="date">Date</div><div id="scanDateTime">-</div></div>
+                        </div>
+                        <div class="form-group full" style="margin-top:1rem;">
+                            <label data-i="analysis">AI / Doctor Analysis</label>
+                            <textarea id="doctorAnalysisText" rows="7"></textarea>
+                        </div>
+                        <button class="btn-success" onclick="saveDoctorAiAnalysis()" style="width:100%; margin-top:1rem;" data-i="saveAnalysis">Save Analysis</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="messages" class="tab">
+            <div class="card"><div class="card-header"><div class="card-title" data-i="messages">Messages</div><button class="btn-primary" onclick="goHome()" data-i="back">Back</button></div><div class="card-content" id="messagesList"></div></div>
+            <div class="card" id="msgCard" style="display:none;"><div class="card-header"><div class="card-title" id="chatTitle">Chat</div><button class="btn-danger" onclick="closeMsgChat()" data-i="close">Close</button></div><div class="card-content"><div class="chat-box" id="msgChatBox"></div><div class="chat-input-group"><input type="text" id="msgInput"><button class="btn-primary" onclick="sendMsgFromMessages()" data-i="send">Send</button></div></div></div>
+        </div>
+
+        <div id="admin" class="tab">
+            <div class="card"><div class="card-header"><div class="card-title" data-i="admin">Contact Admin</div><button class="btn-primary" onclick="goHome()" data-i="back">Back</button></div><div class="card-content"><div class="chat-box" id="adminChatBox"></div><div class="chat-input-group"><input type="text" id="adminMsgInput"><button class="btn-primary" onclick="sendAdminMsg()" data-i="send">Send</button></div></div></div>
+        </div>
+
+        <div id="profile" class="tab">
+            <div class="card"><div class="card-header"><div class="card-title" data-i="profile">My Profile</div><button class="btn-primary" onclick="goHome()" data-i="back">Back</button></div><div class="card-content">
+                <div class="profile-img-wrapper"><img id="docPhotoPreview" src="" alt="profile image"></div>
+                <div class="form-grid">
+                    <div class="form-group"><label data-i="profilePhoto">Profile Photo</label><input type="file" id="docPhotoInput" accept=".jpg,.jpeg,image/jpeg"></div>
+                    <div class="form-group"><label data-i="fullName">Full Name</label><input type="text" id="docName"></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="docEmail"></div>
+                    <div class="form-group"><label data-i="gender">Gender</label><select id="docGender"><option value="male">Male</option><option value="female">Female</option></select></div>
+                    <div class="form-group"><label data-i="age">Age</label><input type="number" id="docAge" min="23"></div>
+                    <div class="form-group"><label data-i="governorate">Governorate</label><select id="docGovernorate"></select></div>
+                    <div class="form-group"><label data-i="phone">Phone Number</label><input type="text" id="docPhone" placeholder="+9627XXXXXXXX"><span class="error-hint" id="phoneHint">Must start with +962</span></div>
+                    <div class="form-group"><label data-i="clinic">Clinic Name</label><input type="text" id="docClinic"></div>
+                    <div class="form-group"><label data-i="university">University</label><input type="text" id="docUniversity"></div>
+                    <div class="form-group"><label data-i="graduationYear">Graduation Year</label><select id="docGradYear"></select></div>
+                    <div class="form-group"><label data-i="experience">Years of Experience</label><input type="number" id="docExp" min="0"><span class="error-hint" id="expHint">Experience years exceed graduation period.</span></div>
+                    <div class="form-group"><label data-i="certificate">Medical Certificate JPG</label><input type="file" id="certInput" accept=".jpg,.jpeg,image/jpeg"></div>
+                    <div class="form-group full"><button class="btn-success" onclick="saveProfile()" id="saveBtn" data-i="saveProfile">Save Information</button></div>
+                </div>
+            </div></div>
+        </div>
+    </main>
+</div>
+
+<div class="modal-overlay" id="confirmModal"><div class="modal-box"><h3 id="confirmTitle">Confirm</h3><p id="confirmMsg"></p><div class="modal-actions"><button class="btn-danger" id="confirmYes">Delete</button><button class="btn-secondary" onclick="closeConfirm()" data-i="cancel">Cancel</button></div></div></div>
+<div class="modal-overlay" id="alertModal"><div class="modal-box"><h3 data-i="alert">Alert</h3><p id="alertMsg"></p><button class="btn-primary" style="width:100%; margin-top:1rem;" onclick="closeAlert()">OK</button></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+    const BASE_URL = 'http://127.0.0.1:8000';
+let ACCESS_TOKEN = localStorage.getItem('access_token') || '';    let lang = localStorage.getItem('lang') || 'en';
+    let isDark = localStorage.getItem('theme') === 'dark';
+    let doctorData = { name: '', gender: 'male', phone: '', clinic: '', age: '', governorate_id: '', university_name: '', graduation_year: '', years_of_experience: '', average_rating: 0 };
+    let appointments = [];
+    let bookedDays = [];
+    let patientChats = [];
+    let activeChatId = null;
+    let activeSupportChatId = null;
+    let doctorAiScans = [];
+    let activeScanId = null;
+    let deleteTarget = null;
+
+    const governorates = [
+        { id: 1, en: 'Amman', ar: 'عمّان' }, { id: 2, en: 'Zarqa', ar: 'الزرقاء' }, { id: 3, en: 'Irbid', ar: 'إربد' },
+        { id: 4, en: 'Jerash', ar: 'جرش' }, { id: 5, en: 'Ajloun', ar: 'عجلون' }, { id: 6, en: 'Mafraq', ar: 'المفرق' },
+        { id: 7, en: 'Balqa', ar: 'البلقاء' }, { id: 8, en: 'Madaba', ar: 'مادبا' }, { id: 9, en: 'Karak', ar: 'الكرك' },
+        { id: 10, en: 'Tafila', ar: 'الطفيلة' }, { id: 11, en: "Ma'an", ar: 'معان' }, { id: 12, en: 'Aqaba', ar: 'العقبة' }
+    ];
+
+    const txt = {
+        en: { dashboard:'Dashboard', appointments:'Appointments', aiScans:'Patient AI Scans', messages:'Messages', admin:'Contact Admin', profile:'Profile', logout:'Logout', back:'Back', refresh:'Refresh', name:'Name', gender:'Gender', phone:'Phone', clinic:'Clinic', rating:'Average Rating', calendar:'Calendar', patient:'Patient', operation:'Operation', date:'Date', scanDetails:'Scan Details', analysis:'AI / Doctor Analysis', saveAnalysis:'Save Analysis', close:'Close', send:'Send', profilePhoto:'Profile Photo', fullName:'Full Name', age:'Age', governorate:'Governorate', university:'University', graduationYear:'Graduation Year', experience:'Years of Experience', certificate:'Medical Certificate JPG', saveProfile:'Save Information', cancel:'Cancel', alert:'Alert', hTitle:'Doctor System - MediVision', hSub:'Welcome Doctor, please choose a section', welcome:'Welcome Doctor', greet:'Welcome Dr. ', saved:'Saved successfully', noData:'No data found.' },
+        ar: { dashboard:'لوحة التحكم', appointments:'المواعيد', aiScans:'فحوصات المرضى', messages:'الرسائل', admin:'تواصل مع الإدارة', profile:'الملف الشخصي', logout:'تسجيل الخروج', back:'رجوع', refresh:'تحديث', name:'الاسم', gender:'الجنس', phone:'الهاتف', clinic:'العيادة', rating:'متوسط التقييم', calendar:'التقويم', patient:'المريض', operation:'رقم العملية', date:'التاريخ', scanDetails:'تفاصيل الفحص', analysis:'تحليل الذكاء الاصطناعي / الطبيب', saveAnalysis:'حفظ التحليل', close:'إغلاق', send:'إرسال', profilePhoto:'الصورة الشخصية', fullName:'الاسم الكامل', age:'العمر', governorate:'المحافظة', university:'الجامعة', graduationYear:'سنة التخرج', experience:'سنوات الخبرة', certificate:'الشهادة الطبية JPG', saveProfile:'حفظ المعلومات', cancel:'إلغاء', alert:'تنبيه', hTitle:'نظام الطبيب - MediVision', hSub:'أهلاً بك دكتور، يرجى اختيار القسم', welcome:'مرحباً دكتور', greet:'مرحباً دكتور ', saved:'تم الحفظ بنجاح', noData:'لا توجد بيانات.' }
+    };
+
+    function T(key) { return (txt[lang] && txt[lang][key]) || key; }
+    function authHeaders() { return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + ACCESS_TOKEN }; }
+    function mediaUrl(url) { if (!url) return ''; return url.startsWith('http') ? url : BASE_URL + url; }
+    function formatName(name) { return name ? name.charAt(0).toUpperCase() + name.slice(1) : ''; }
+
+    async function apiCall(method, endpoint, body) {
+        try {
+            const opts = { method, headers: authHeaders() };
+            if (body !== undefined && body !== null) opts.body = JSON.stringify(body);
+            const res = await fetch(BASE_URL + endpoint, opts);
+            if (res.status === 401) { showAlert('Authentication failed. Please login again.'); return null; }
+            let data = {};
+            const ct = res.headers.get('content-type') || '';
+            if (ct.includes('application/json')) data = await res.json();
+            if (!res.ok) { console.error('API error:', res.status, data); return null; }
+            return data;
+        } catch (e) {
+            console.error('API error:', e);
+            showAlert('Connection error. Check Django server.');
+            return null;
+        }
+    }
+
+    async function apiFormData(endpoint, formData) {
+        try {
+            const res = await fetch(BASE_URL + endpoint, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + ACCESS_TOKEN }, body: formData });
+            let data = {};
+            const ct = res.headers.get('content-type') || '';
+            if (ct.includes('application/json')) data = await res.json();
+            if (!res.ok) { console.error('Form API error:', res.status, data); return null; }
+            return data;
+        } catch(e) { console.error(e); showAlert('Connection error.'); return null; }
+    }
+
+    function requireAuth() {
+        if (!ACCESS_TOKEN) {
+            showAlert('No login token found. Please login as doctor first.');
+            return false;
+        }
+        const role = sessionStorage.getItem('eyecare_role');
+        if (role && role !== 'doctor') {
+            showAlert('This page is only for doctor accounts.');
+            return false;
+        }
+        return true;
+    }
+
+    function renderHomeGrid() {
+        const sections = [
+            { id:'dashboard', n:T('dashboard'), i:'fa-chart-bar' },
+            { id:'appointments', n:T('appointments'), i:'fa-calendar-alt' },
+            { id:'eyescan', n:T('aiScans'), i:'fa-eye' },
+            { id:'messages', n:T('messages'), i:'fa-comments' },
+            { id:'admin', n:T('admin'), i:'fa-user-shield' },
+            { id:'profile', n:T('profile'), i:'fa-user-circle' }
+        ];
+        document.getElementById('homeGrid').innerHTML = sections.map(s => `
+            <div class="home-card" onclick="goToTab('${s.id}')">
+                <div class="home-card-icon"><i class="fas ${s.i}"></i></div>
+                <div class="home-card-name">${s.n}</div>
+            </div>
+        `).join('');
+    }
+
+    function updateLang() {
+        document.getElementById('html-root').lang = lang;
+        document.getElementById('html-root').dir = lang === 'ar' ? 'rtl' : 'ltr';
+        document.getElementById('hTitle').textContent = T('hTitle');
+        document.getElementById('hSub').textContent = T('hSub');
+        document.getElementById('homeLangBtn').textContent = lang === 'ar' ? 'English' : 'العربية';
+        document.getElementById('langBtn').textContent = lang === 'ar' ? 'EN' : 'AR';
+        document.querySelectorAll('[data-i]').forEach(el => el.textContent = T(el.getAttribute('data-i')));
+        document.getElementById('msgInput').placeholder = lang === 'ar' ? 'اكتب رسالتك...' : 'Type your message...';
+        document.getElementById('adminMsgInput').placeholder = lang === 'ar' ? 'رسالة للإدارة...' : 'Message to admin...';
+        renderHomeGrid();
+        updateDash();
+        fillGovernorates();
+    }
+
+    function toggleTheme() {
+        isDark = !isDark;
+        document.body.classList.toggle('dark', isDark);
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        const icon = isDark ? 'fas fa-sun' : 'fas fa-moon';
+        document.getElementById('homeThemeIcon').className = icon;
+        document.getElementById('themeIcon').className = icon;
+    }
+
+    function toggleLang() {
+        lang = lang === 'ar' ? 'en' : 'ar';
+        localStorage.setItem('lang', lang);
+        updateLang();
+    }
+
+    function goToTab(id) {
+        if (!requireAuth()) return;
+        document.getElementById('homePage').classList.remove('active');
+        document.getElementById('appPage').classList.add('active');
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        if (id === 'dashboard') loadDashboardSummary();
+        if (id === 'appointments') loadAppointments();
+        if (id === 'eyescan') loadDoctorAiScans();
+        if (id === 'messages') loadPatientChats();
+        if (id === 'admin') loadAdminChat();
+        if (id === 'profile') loadDoctorProfile();
+    }
+
+    function goHome() {
+        document.getElementById('appPage').classList.remove('active');
+        document.getElementById('homePage').classList.add('active');
+    }
+
+    async function loadDoctorProfile() {
+        const data = await apiCall('GET', '/api/doctor/profile/');
+        if (!data) return;
+        doctorData.name = data.full_name || '';
+        doctorData.email = data.email || '';
+        doctorData.gender = data.gender || 'male';
+        doctorData.age = data.age || '';
+        doctorData.phone = data.phone_number || '';
+        doctorData.clinic = data.clinic_name || '';
+        doctorData.governorate_id = data.governorate_id || '';
+        doctorData.university_name = data.university_name || '';
+        doctorData.graduation_year = data.graduation_year || '';
+        doctorData.years_of_experience = data.years_of_experience || '';
+        doctorData.average_rating = data.average_rating || 0;
+        const image = data.profile_image || data.profile_picture || data.photo || '';
+        if (image) document.getElementById('docPhotoPreview').src = mediaUrl(image);
+        document.getElementById('docName').value = doctorData.name;
+        document.getElementById('docEmail').value = doctorData.email;
+        document.getElementById('docGender').value = doctorData.gender;
+        document.getElementById('docAge').value = doctorData.age;
+        document.getElementById('docPhone').value = doctorData.phone;
+        document.getElementById('docClinic').value = doctorData.clinic;
+        document.getElementById('docGovernorate').value = doctorData.governorate_id || '';
+        document.getElementById('docUniversity').value = doctorData.university_name;
+        document.getElementById('docGradYear').value = doctorData.graduation_year || '';
+        document.getElementById('docExp').value = doctorData.years_of_experience;
+        updateDash();
+    }
+
+    async function loadDashboardSummary() {
+        const data = await apiCall('GET', '/api/doctor/dashboard/');
+        if (!data) return;
+        if (data.profile) {
+            doctorData.name = data.profile.full_name || doctorData.name;
+            doctorData.gender = data.profile.gender || doctorData.gender;
+            doctorData.phone = data.profile.phone_number || doctorData.phone;
+            doctorData.clinic = data.profile.clinic_name || doctorData.clinic;
+            doctorData.average_rating = data.average_rating || doctorData.average_rating;
+        }
+        if (data.appointments && data.appointments.upcoming !== undefined) document.getElementById('dashApps').textContent = data.appointments.upcoming;
+        updateDash();
+    }
+
+    function updateDash() {
+        document.getElementById('dashName').textContent = doctorData.name || '--';
+        document.getElementById('dashGender').textContent = doctorData.gender || '--';
+        document.getElementById('dashPhone').textContent = doctorData.phone || '--';
+        document.getElementById('dashClinic').textContent = doctorData.clinic || '--';
+        document.getElementById('dashRating').textContent = doctorData.average_rating || 0;
+        document.getElementById('greeting').textContent = doctorData.name ? T('greet') + formatName(doctorData.name) : T('welcome');
+    }
+
+    async function saveProfile() {
+        const phone = document.getElementById('docPhone').value.trim();
+        const grad = parseInt(document.getElementById('docGradYear').value);
+        const exp = parseInt(document.getElementById('docExp').value) || 0;
+        const nowYear = new Date().getFullYear();
+        let hasError = false;
+        if (phone && !phone.startsWith('+962')) { document.getElementById('phoneHint').style.display = 'block'; hasError = true; } else document.getElementById('phoneHint').style.display = 'none';
+        if (grad && exp > (nowYear - grad)) { document.getElementById('expHint').style.display = 'block'; hasError = true; } else document.getElementById('expHint').style.display = 'none';
+        if (hasError) return;
+        const formData = new FormData();
+        formData.append('full_name', document.getElementById('docName').value.trim());
+        formData.append('email', document.getElementById('docEmail').value.trim());
+        formData.append('gender', document.getElementById('docGender').value);
+        if (document.getElementById('docAge').value) formData.append('age', document.getElementById('docAge').value);
+        if (document.getElementById('docGovernorate').value) formData.append('governorate_id', document.getElementById('docGovernorate').value);
+        formData.append('phone_number', phone);
+        formData.append('clinic_name', document.getElementById('docClinic').value.trim());
+        formData.append('university_name', document.getElementById('docUniversity').value.trim());
+        if (grad) formData.append('graduation_year', grad);
+        formData.append('years_of_experience', exp);
+        const photo = document.getElementById('docPhotoInput').files[0];
+        if (photo) formData.append('profile_image', photo);
+        const cert = document.getElementById('certInput').files[0];
+        if (cert) formData.append('certificate_image', cert);
+        const data = await apiFormData('/api/doctor/profile/', formData);
+        if (data !== null) { showToast(T('saved')); await loadDoctorProfile(); } else showAlert('Profile update failed.');
+    }
+
+    async function loadAppointments() {
+        const data = await apiCall('GET', '/api/doctor/appointments/');
+        if (!data) return;
+        const list = Array.isArray(data) ? data : (data.appointments || data.results || []);
+        appointments = list.map(a => {
+            const dt = a.appointment_datetime || a.date || a.appointment_date || '';
+            return { id: a.appointment_id || a.id, patient: a.patient_name || a.patient || '', email: a.patient_email || '', date: String(dt).slice(0, 10), status: a.status || 'pending' };
+        });
+        bookedDays = [];
+        appointments.forEach(a => { const d = parseInt((a.date || '').split('-')[2]); if (d && !bookedDays.includes(d)) bookedDays.push(d); });
+        renderAppointments();
+        renderCalendar();
+    }
+
+    function renderAppointments() {
+        const list = document.getElementById('appointmentsList');
+        if (!appointments.length) { list.innerHTML = `<div class="item">${T('noData')}</div>`; return; }
+        list.innerHTML = appointments.map(a => `
+            <div class="item">
+                <div><b>${a.patient || 'Patient'}</b><br><span class="small">${a.email || ''}</span><br><span class="small">${a.date || ''}</span> <span class="badge ${a.status}">${a.status}</span></div>
+                <div class="item-actions">
+                    ${a.status !== 'confirmed' ? `<button class="btn-success" onclick="updateAppointmentStatus(${a.id}, 'confirmed')">Confirm</button>` : ''}
+                    ${a.status !== 'cancelled' ? `<button class="btn-secondary" onclick="updateAppointmentStatus(${a.id}, 'cancelled')">Cancel</button>` : ''}
+                    <button class="btn-danger" onclick="askDeleteAppointment(${a.id})">Delete</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async function updateAppointmentStatus(id, status) {
+        const data = await apiCall('PATCH', `/api/doctor/appointments/${id}/status/`, { status });
+        if (data !== null) { showToast('Updated.'); await loadAppointments(); }
+    }
+
+    function askDeleteAppointment(id) {
+        deleteTarget = id;
+        document.getElementById('confirmMsg').textContent = 'Delete this appointment?';
+        document.getElementById('confirmYes').onclick = confirmDeleteAppointment;
+        document.getElementById('confirmModal').classList.add('active');
+    }
+
+    async function confirmDeleteAppointment() {
+        if (!deleteTarget) return;
+        const data = await apiCall('DELETE', `/api/doctor/appointments/${deleteTarget}/status/`);
+        closeConfirm();
+        if (data !== null) { showToast('Deleted.'); await loadAppointments(); }
+    }
+
+    function renderCalendar() {
+        const c = document.getElementById('doctorCalendar');
+        c.innerHTML = '';
+        for (let i = 1; i <= 31; i++) {
+            const d = document.createElement('div');
+            d.className = 'calendar-day ' + (bookedDays.includes(i) ? 'booked' : 'available');
+            d.textContent = i;
+            c.appendChild(d);
+        }
+    }
+
+    async function loadPatientChats() {
+        const data = await apiCall('GET', '/api/doctor/chats/');
+        if (!data) return;
+        patientChats = Array.isArray(data) ? data : (data.chats || data.results || []);
+        renderChatsList();
+    }
+
+    function renderChatsList() {
+        const list = document.getElementById('messagesList');
+        document.getElementById('msgCard').style.display = 'none';
+        list.style.display = 'block';
+        if (!patientChats.length) { list.innerHTML = `<div class="item">${T('noData')}</div>`; return; }
+        list.innerHTML = patientChats.map(c => `
+            <div class="item" style="cursor:pointer" onclick="openPatientChat(${c.chat_id})">
+                <div><b>${c.patient_name || 'Patient'}</b><br><span class="small">${c.patient_email || ''}</span><br><span class="small">${c.created_at || ''}</span></div>
+                <button class="btn-primary">Open</button>
+            </div>
+        `).join('');
+    }
+
+    async function openPatientChat(chatId) {
+        activeChatId = chatId;
+        const chat = patientChats.find(c => c.chat_id === chatId);
+        document.getElementById('chatTitle').textContent = chat ? chat.patient_name : 'Chat';
+        document.getElementById('messagesList').style.display = 'none';
+        document.getElementById('msgCard').style.display = 'block';
+        const data = await apiCall('GET', `/api/doctor/chats/${chatId}/messages/`);
+        if (!data) return;
+        const messages = data.messages || data.results || [];
+        renderMessages('msgChatBox', messages, 'doctor');
+    }
+
+    function renderMessages(boxId, messages, myRole) {
+        const box = document.getElementById(boxId);
+        box.innerHTML = messages.map(m => {
+            const role = m.sender_role || m.role || m.sender;
+            const sent = role === myRole;
+            const text = m.text_content || m.message || m.content || m.text || '';
+            return `<div class="chat-message ${sent ? 'sent' : 'received'}"><div class="chat-bubble">${escapeHtml(text)}</div></div>`;
+        }).join('');
+        box.scrollTop = box.scrollHeight;
+    }
+
+    async function sendMsgFromMessages() {
+        const input = document.getElementById('msgInput');
+        const text = input.value.trim();
+        if (!text || !activeChatId) return;
+        const data = await apiCall('POST', `/api/doctor/chats/${activeChatId}/messages/`, { text_content: text });
+        if (data !== null) {
+            input.value = '';
+            await openPatientChat(activeChatId);
+        }
+    }
+
+    function closeMsgChat() {
+        activeChatId = null;
+        document.getElementById('msgCard').style.display = 'none';
+        document.getElementById('messagesList').style.display = 'block';
+    }
+
+    async function loadAdminChat() {
+        const chatData = await apiCall('POST', '/api/doctor/support-chats/');
+        if (!chatData || !chatData.chat) return;
+        activeSupportChatId = chatData.chat.chat_id;
+        const data = await apiCall('GET', `/api/doctor/support-chats/${activeSupportChatId}/messages/`);
+        if (!data) return;
+        renderMessages('adminChatBox', data.messages || data.results || [], 'doctor');
+    }
+
+    async function sendAdminMsg() {
+        const input = document.getElementById('adminMsgInput');
+        const text = input.value.trim();
+        if (!text) return;
+        if (!activeSupportChatId) {
+            const chatData = await apiCall('POST', '/api/doctor/support-chats/');
+            if (!chatData || !chatData.chat) return;
+            activeSupportChatId = chatData.chat.chat_id;
+        }
+        const data = await apiCall('POST', `/api/doctor/support-chats/${activeSupportChatId}/messages/`, { text_content: text });
+        if (data !== null) { input.value = ''; await loadAdminChat(); }
+    }
+
+    async function loadDoctorAiScans() {
+        const data = await apiCall('GET', '/api/doctor/ai-scans/');
+        if (!data) return;
+        doctorAiScans = Array.isArray(data) ? data : (data.scans || data.results || []);
+        renderDoctorAiScans();
+    }
+
+    function renderDoctorAiScans() {
+        const list = document.getElementById('doctorAiScansList');
+        document.getElementById('analysisBox').style.display = 'none';
+        if (!doctorAiScans.length) { list.innerHTML = `<div class="item">${T('noData')}</div>`; return; }
+        list.innerHTML = doctorAiScans.map(scan => {
+            const img = mediaUrl(scan.uploaded_image || '');
+            return `<div class="item">
+                <div><b>${scan.patient_name || 'Patient'}</b><br><span class="small">${scan.patient_email || ''}</span><br><span class="small">${scan.operation_number || ''}</span><br><span class="small">${scan.scan_datetime || ''}</span></div>
+                <div class="item-actions">${img ? `<img class="scan-img" src="${img}">` : ''}<button class="btn-primary" onclick="openAiScan(${scan.scan_id})">View / Edit</button></div>
+            </div>`;
+        }).join('');
+    }
+
+    async function openAiScan(scanId) {
+        const scan = await apiCall('GET', `/api/doctor/ai-scans/${scanId}/`);
+        if (!scan) return;
+        activeScanId = scan.scan_id;
+        const img = mediaUrl(scan.uploaded_image || '');
+        document.getElementById('scanImagePreview').src = img;
+        document.getElementById('scanImagePreview').style.display = img ? 'block' : 'none';
+        document.getElementById('scanPatientName').textContent = scan.patient_name || '-';
+        document.getElementById('scanPatientEmail').textContent = scan.patient_email || '-';
+        document.getElementById('scanOperationNumber').textContent = scan.operation_number || '-';
+        document.getElementById('scanDateTime').textContent = scan.scan_datetime || '-';
+        document.getElementById('doctorAnalysisText').value = scan.ai_result || '';
+        document.getElementById('analysisBox').style.display = 'block';
+        document.getElementById('analysisBox').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    async function saveDoctorAiAnalysis() {
+        const text = document.getElementById('doctorAnalysisText').value.trim();
+        if (!activeScanId || !text) return;
+        const data = await apiCall('PATCH', `/api/doctor/ai-scans/${activeScanId}/analysis/`, { ai_result: text });
+        if (data !== null) { showToast('Analysis saved successfully.'); await loadDoctorAiScans(); }
+    }
+
+    function fillGovernorates() {
+        const select = document.getElementById('docGovernorate');
+        const current = select.value || doctorData.governorate_id || '';
+        select.innerHTML = `<option value="">${T('governorate')}</option>` + governorates.map(g => `<option value="${g.id}">${lang === 'ar' ? g.ar : g.en}</option>`).join('');
+        select.value = current;
+    }
+
+    function fillYears() {
+        const select = document.getElementById('docGradYear');
+        const current = select.value;
+        select.innerHTML = '';
+        for (let y = new Date().getFullYear(); y >= 1960; y--) select.innerHTML += `<option value="${y}">${y}</option>`;
+        if (current) select.value = current;
+    }
+
+    function previewImages() {
+        document.getElementById('docPhotoInput').onchange = e => {
+            const f = e.target.files[0]; if (!f) return;
+            document.getElementById('docPhotoPreview').src = URL.createObjectURL(f);
+        };
+    }
+
+    function escapeHtml(value) {
+        return String(value || '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+    }
+
+    function showAlert(message) { document.getElementById('alertMsg').textContent = message; document.getElementById('alertModal').classList.add('active'); }
+    function closeAlert() { document.getElementById('alertModal').classList.remove('active'); }
+    function closeConfirm() { document.getElementById('confirmModal').classList.remove('active'); deleteTarget = null; }
+    function showToast(message) { const t = document.getElementById('toast'); t.textContent = message; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2500); }
+
+    function logout() {
+        sessionStorage.clear();
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        window.location.href = 'log.html';
+    }
+
+    document.getElementById('homeThemeBtn').onclick = toggleTheme;
+    document.getElementById('themeBtn').onclick = toggleTheme;
+    document.getElementById('homeLangBtn').onclick = toggleLang;
+    document.getElementById('langBtn').onclick = toggleLang;
+
+    if (isDark) document.body.classList.add('dark');
+    fillYears();
+    fillGovernorates();
+    previewImages();
+    updateLang();
+    if (ACCESS_TOKEN) loadDoctorProfile();
+</script>
+</body>
+</html>
